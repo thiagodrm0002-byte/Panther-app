@@ -1,3 +1,4 @@
+console.log("APP JS OK");
 // 🔐 CONEXIÓN SUPABASE
 const supabaseUrl = "https://muckmihrgifzxazghngw.supabase.co";
 const supabaseKey = "sb_publishable_wNdAJjCUenMzrYSWMelwHw_-mbvowyW";
