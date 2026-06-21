@@ -1,5 +1,56 @@
-<!-- SUPABASE PRIMERO -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panther Tattoo</title>
+  <style>
+    body {
+      background: black;
+      color: gold;
+      font-family: Arial;
+      text-align: center;
+      padding-top: 50px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    #app {
+      display: none;
+    }
+  </style>
+</head>
 
-<!-- TU APP DESPUÉS -->
-<script src="./app.js"></script>
+<body>
+
+<h1>🐆 Panther Tattoo</h1>
+
+<div id="login">
+  <input id="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Password"><br>
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="app">
+  <h2>Dashboard</h2>
+  <button onclick="alert('Turnos')">Turnos</button>
+  <button onclick="alert('Clientes')">Clientes</button>
+  <button onclick="alert('Pagos')">Pagos</button>
+</div>
+
+<script>
+function login(){
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  if(email && pass){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  } else {
+    alert("Completa todo");
+  }
+}
+</script>
+
+</body>
+</html>
