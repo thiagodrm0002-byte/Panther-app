@@ -1,2 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panther Tattoo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="login">
+  <h1>🐆 Panther Tattoo</h1>
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="app" style="display:none;">
+  <h2>Dashboard Panther</h2>
+
+  <button onclick="show('turnos')">Turnos</button>
+  <button onclick="show('clientes')">Clientes</button>
+  <button onclick="show('pagos')">Pagos</button>
+
+  <div id="content"></div>
+</div>
+
+<!-- 1. SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- 2. TU LOGICA -->
 <script src="app.js"></script>
+
+</body>
+</html>
