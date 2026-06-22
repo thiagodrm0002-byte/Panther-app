@@ -17,33 +17,33 @@ const {data}=await sb
 .select("*")
 .eq("username",u)
 .eq("password",p)
-.eq("active",true)
-.single();
+.eq("active",true);
 
-if(!data){
+if(!data || data.length===0){
 alert("Login incorrecto");
 return;
 }
 
-user=data;
+user=data[0];
 
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="grid";
 
-document.getElementById("role").innerText=user.role;
+document.getElementById("roleTag").innerText=user.role;
 
-initCalendar();
+renderCalendar();
 }
 
-/* CALENDAR */
-function initCalendar(){
+/* CALENDAR REAL SIMPLE */
+function renderCalendar(){
 
 let html="";
+
 for(let i=1;i<=30;i++){
-html+=`<div class='day' onclick='openDay(${i})'>${i}</div>`;
+html+=`<div class="day" onclick="openDay(${i})">${i}</div>`;
 }
 
-document.getElementById("calendar").innerHTML=html;
+document.getElementById("grid").innerHTML=html;
 }
 
 /* OPEN DAY */
@@ -51,7 +51,7 @@ async function openDay(day){
 
 selectedDay=day;
 
-document.getElementById("dayTitle")=`Día ${day}`;
+document.getElementById("dayTitle").innerText="Día "+day;
 
 const {data}=await sb
 .from("appointments")
@@ -60,6 +60,7 @@ const {data}=await sb
 
 let html="";
 
+if(data){
 data.forEach(t=>{
 html+=`
 <div class="card ${t.status}">
@@ -69,8 +70,9 @@ ${t.artist_name}
 </div>
 `;
 });
+}
 
-document.getElementById("agenda").innerHTML=html;
+document.getElementById("agendaList").innerHTML=html;
 }
 
 /* MODAL */
@@ -85,13 +87,13 @@ document.getElementById("modal").style.display="none";
 /* SAVE TURN */
 async function saveTurn(){
 
-const client=m_client.value;
-const time=m_time.value;
-const artist=m_artist.value;
-const deposit=m_deposit.value;
+const client=document.getElementById("m_client").value;
+const time=document.getElementById("m_time").value;
+const artist=document.getElementById("m_artist").value;
+const deposit=document.getElementById("m_deposit").value;
 
 let status="booked";
-if(deposit && deposit!="") status="pending";
+if(deposit) status="pending";
 
 await sb.from("appointments").insert([{
 client,
