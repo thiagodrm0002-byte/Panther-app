@@ -20,22 +20,22 @@ flex-direction:column;
 gap:10px;
 }
 
+.logo{
+font-size:22px;
+font-weight:bold;
+}
+
 .sidebar button{
 background:#1c1c1c;
 color:#f5c542;
 border:none;
 padding:10px;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
 }
 
-.logo{
-font-size:20px;
-margin-bottom:10px;
-}
-
-.userBox{
-margin-top:auto;
+.artists{
+margin-top:10px;
 font-size:12px;
 opacity:0.7;
 }
@@ -45,7 +45,7 @@ opacity:0.7;
 padding:15px;
 }
 
-.topBar{
+.header{
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -56,7 +56,6 @@ display:grid;
 grid-template-columns:repeat(7,1fr);
 text-align:center;
 opacity:0.6;
-margin-top:10px;
 }
 
 #calendarGrid{
@@ -67,15 +66,29 @@ margin-top:10px;
 }
 
 .day{
-background:#1c1c1c;
-padding:20px;
-text-align:center;
-border-radius:10px;
+width:40px;
+height:40px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
 cursor:pointer;
+margin:auto;
+background:#1c1c1c;
+transition:0.2s;
 }
 
 .day:hover{
 background:#2a2a2a;
+}
+
+.today{
+border:1px solid #f5c542;
+}
+
+.selected{
+background:#f5c542;
+color:black;
 }
 
 /* AGENDA */
@@ -84,10 +97,16 @@ background:#111;
 padding:15px;
 }
 
-.agendaHeader{
-display:flex;
-justify-content:space-between;
+.card{
+background:#1c1c1c;
+padding:10px;
+margin-top:8px;
+border-radius:8px;
 }
+
+.green{border-left:4px solid #2ecc71}
+.yellow{border-left:4px solid #f1c40f}
+.red{border-left:4px solid #e74c3c}
 
 /* MODAL */
 #modal{
@@ -106,10 +125,10 @@ border-radius:12px;
 width:300px;
 }
 
-input,button{
+input,select,button{
 width:100%;
-margin-top:8px;
 padding:10px;
+margin-top:8px;
 border:none;
 border-radius:8px;
 }
