@@ -5,17 +5,16 @@ background:#0a0a0a;
 color:#f5c542;
 }
 
-/* LAYOUT EXACTO SAAS */
 #app{
 display:grid;
-grid-template-columns:240px 1fr 360px;
+grid-template-columns:240px 1fr 340px;
 height:100vh;
 }
 
-/* SIDEBAR REAL */
+/* SIDEBAR */
 .sidebar{
-background:#0e0e0e;
-padding:18px;
+background:#0f0f0f;
+padding:15px;
 display:flex;
 flex-direction:column;
 border-right:1px solid #1f1f1f;
@@ -23,89 +22,53 @@ border-right:1px solid #1f1f1f;
 
 .logo{
 font-size:20px;
-font-weight:700;
-margin-bottom:20px;
+font-weight:bold;
+margin-bottom:15px;
 }
 
-/* BOTONES LIMPIOS */
 .sidebar button{
 background:#151515;
 color:#f5c542;
 border:none;
 padding:10px;
-border-radius:10px;
 margin-bottom:8px;
-text-align:left;
+border-radius:10px;
 cursor:pointer;
-font-size:13px;
 }
 
-/* ROL ABAJO (ESTILO IMAGEN) */
-.user{
-margin-top:auto;
-font-size:12px;
-opacity:0.6;
-border-top:1px solid #222;
-padding-top:10px;
-}
+/* VIEWS */
+.view{display:none}
+.view.active{display:block}
 
-/* HEADER CALENDARIO (FIX IMPORTANTE) */
-.top{
+/* CALENDAR */
+.topbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:5px 0;
 }
 
-.monthTitle{
-font-size:18px;
-font-weight:600;
-opacity:0.9;
-}
-
-/* BOTONES MES PEQUEÑOS (FIX TU ERROR) */
-.top button{
-background:none;
-border:none;
-color:#f5c542;
-font-size:18px;
-cursor:pointer;
-padding:5px;
-}
-
-/* CALENDARIO */
 #calendarGrid{
 display:grid;
 grid-template-columns:repeat(7,1fr);
 gap:10px;
-margin-top:15px;
+margin-top:10px;
 }
 
 .day{
-width:38px;
-height:38px;
+width:40px;
+height:40px;
 border-radius:50%;
+background:#151515;
 display:flex;
 align-items:center;
 justify-content:center;
-background:#141414;
 cursor:pointer;
 margin:auto;
-transition:.2s;
 }
 
-.day:hover{
-background:#1f1f1f;
-}
+.today{border:1px solid #f5c542}
 
-.today{
-border:1px solid #f5c542;
-}
-
-.selected{
-background:#f5c542;
-color:black;
-}
+.selected{background:#f5c542;color:black}
 
 /* AGENDA */
 .agenda{
@@ -114,25 +77,23 @@ padding:15px;
 border-left:1px solid #1f1f1f;
 }
 
-/* CARDS TURNOS */
 .card{
 background:#151515;
 padding:10px;
 margin-top:8px;
 border-radius:10px;
-font-size:13px;
 }
 
 .green{border-left:4px solid #2ecc71}
 .yellow{border-left:4px solid #f1c40f}
 .red{border-left:4px solid #e74c3c}
 
-/* MODAL PRO */
+/* MODAL */
 #modal{
 display:none;
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0.75);
+background:rgba(0,0,0,0.7);
 justify-content:center;
 align-items:center;
 }
@@ -142,14 +103,4 @@ background:#111;
 padding:20px;
 border-radius:15px;
 width:320px;
-}
-
-input,select,button{
-width:100%;
-padding:10px;
-margin-top:8px;
-border:none;
-border-radius:8px;
-background:#1a1a1a;
-color:white;
 }
