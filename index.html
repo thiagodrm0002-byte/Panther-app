@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Panther Studio SaaS</title>
+<title>Panther Studio</title>
 
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -11,7 +11,7 @@
 <body>
 
 <!-- LOGIN -->
-<div id="auth">
+<div id="login">
   <div class="loginBox">
     <h1>🐆 Panther Studio</h1>
 
@@ -19,8 +19,6 @@
     <input id="password" type="password" placeholder="Contraseña">
 
     <button onclick="login()">Entrar</button>
-
-    <p id="msg"></p>
   </div>
 </div>
 
@@ -37,24 +35,43 @@
     <button onclick="showArtists()">🎨 Equipo</button>
     <button onclick="logout()">Salir</button>
 
-    <div class="role" id="roleBox"></div>
+    <div class="role" id="role"></div>
   </div>
 
   <!-- CALENDARIO -->
-  <div class="main">
+  <div class="calendarPanel">
+    <div id="calendarHeader"></div>
     <div id="calendar"></div>
   </div>
 
   <!-- AGENDA -->
-  <div class="right">
-    <h3 id="dayTitle">Agenda</h3>
-    <div id="agenda"></div>
+  <div class="agendaPanel">
+    <div class="agendaHeader">
+      <h3 id="dayTitle">Agenda</h3>
+      <button onclick="openModal()">+ Nuevo turno</button>
+    </div>
 
-    <button onclick="openModal()">+ Nuevo turno</button>
+    <div id="agenda"></div>
   </div>
 
 </div>
 
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modalBox">
+    <h3>Nuevo Turno</h3>
+
+    <input id="m_client" placeholder="Cliente">
+    <input id="m_time" placeholder="Hora 14:15">
+    <input id="m_artist" placeholder="Tatuador">
+    <input id="m_deposit" placeholder="Seña">
+
+    <button onclick="saveTurn()">Guardar</button>
+    <button onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
 <script src="app.js"></script>
+
 </body>
 </html>
