@@ -1,18 +1,29 @@
-let currentDate = new Date();
+const supabase = supabase.createClient(
+"https://rtuaentwbbqkbndzeeyo.supabase.co",
+"sb_publishable_C44-EmJ5vKN8Kv6rEBrUdA_ZGVba0SQ"
+);
+
+let user = null;
 let selectedDay = null;
+let currentMonth = new Date();
 
-let artists = ["Alex", "Sofi"];
-let appointments = [];
+/* LOGIN */
+async function login(){
 
-/* INIT */
+const { data, error } = await supabase.auth.signInWithPassword({
+email: email.value,
+password: password.value
+});
+
+if(error) return alert("Login error");
+
+user = data.user;
+
+loginView.style.display="none";
+mainApp.style.display="flex";
+
 renderCalendar();
-renderArtists();
-
-/* NAV VIEWS */
-function showView(view){
-
-document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-document.getElementById(view+"View").classList.add("active");
+loadArtists();
 }
 
 /* CALENDAR */
@@ -22,81 +33,69 @@ const grid = document.getElementById("calendarGrid");
 grid.innerHTML = "";
 
 document.getElementById("monthTitle").innerText =
-currentDate.toLocaleString('es',{month:'long',year:'numeric'});
+currentMonth.toLocaleString('es',{month:'long',year:'numeric'});
 
-let firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-let days = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
+let days = new Date(currentMonth.getFullYear(), currentMonth.getMonth()+1,0).getDate();
 
-for(let i=0;i<firstDay;i++){
-grid.innerHTML += `<div></div>`;
-}
-
-for(let d=1;d<=days;d++){
-grid.innerHTML += `<div class="day" onclick="openDay(${d})">${d}</div>`;
+for(let i=1;i<=days;i++){
+grid.innerHTML += `<div class="day" onclick="openDay(${i})">${i}</div>`;
 }
 }
 
 /* DAY */
-function openDay(day){
+async function openDay(day){
 
 selectedDay = day;
 
 document.getElementById("selectedDay").innerText = "Día " + day;
 
-let list = appointments.filter(a=>a.day===day);
+let { data } = await supabase
+.from("appointments")
+.select("*")
+.eq("date", day);
 
-document.getElementById("appointmentsList").innerHTML =
-list.map(a=>`
+document.getElementById("appointments").innerHTML =
+data.map(a=>`
 <div class="card ${a.status}">
-${a.time}<br>${a.client}<br>${a.artist}
+${a.time} - ${a.client_name}<br>${a.artist_name}
 </div>
 `).join("");
 }
 
 /* SAVE */
-function saveAppointment(){
+async function save(){
 
-appointments.push({
-day:selectedDay,
-client:client.value,
-time:time.value,
-artist:artistSelect.value,
-status:status.value
-});
+await supabase.from("appointments").insert([{
+client_name: client.value,
+artist_name: artist.value,
+time: time.value,
+status: status.value,
+date: selectedDay,
+month: currentMonth.getMonth(),
+user_id: user.id
+}]);
 
 closeModal();
 openDay(selectedDay);
 }
 
-/* MODAL */
-function openModal(){modal.style.display="flex"}
-function closeModal(){modal.style.display="none"}
-
 /* ARTISTS */
-function addArtist(){
+async function loadArtists(){
 
-if(newArtist.value){
-artists.push(newArtist.value);
-newArtist.value="";
-renderArtists();
-}
-}
+let { data } = await supabase.from("artists").select("*");
 
-function renderArtists(){
+artist.innerHTML = "";
 
-artistSelect.innerHTML="";
-artists.forEach(a=>{
-artistSelect.innerHTML += `<option>${a}</option>`;
+data.forEach(a=>{
+artist.innerHTML += `<option>${a.name}</option>`;
 });
 }
 
-/* MONTH */
-function prevMonth(){
-currentDate.setMonth(currentDate.getMonth()-1);
-renderCalendar();
+/* MODAL */
+function openModal(){
+modal.style.display="flex";
 }
 
-function nextMonth(){
-currentDate.setMonth(currentDate.getMonth()+1);
-renderCalendar();
+function closeModal(){
+modal.style.display="none";
 }
