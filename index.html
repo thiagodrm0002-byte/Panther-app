@@ -3,34 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <title>Panther Tattoo</title>
+
   <style>
-    body {
-      background: black;
-      color: gold;
-      font-family: Arial;
-      text-align: center;
-      padding-top: 50px;
+    body{
+      background:black;
+      color:gold;
+      font-family:Arial;
+      text-align:center;
+      padding-top:40px;
     }
-    input, button {
-      padding: 10px;
-      margin: 5px;
+
+    input, button{
+      padding:10px;
+      margin:5px;
     }
-    #app {
-      display: none;
+
+    #app{
+      display:none;
+    }
+
+    #content{
+      margin-top:20px;
+    }
+
+    button{
+      cursor:pointer;
     }
   </style>
 </head>
 
 <body>
 
-<h1> Panther Tattoo</h1>
+<h1>🐆 Panther Tattoo</h1>
 
+<!-- LOGIN -->
 <div id="login">
   <input id="email" placeholder="Email"><br>
   <input id="password" type="password" placeholder="Password"><br>
   <button onclick="login()">Entrar</button>
 </div>
 
+<!-- APP -->
 <div id="app">
   <h2>Dashboard</h2>
 
@@ -43,13 +56,49 @@
 
 <script>
 function login(){
-function login(){
-  alert("BOTÓN LOGIN FUNCIONA");
-
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
 
-  alert("Email: " + email + " Pass: " + pass);
+  if(email && pass){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  } else {
+    alert("Completa todo");
+  }
 }
+
+function show(section){
+  const c = document.getElementById("content");
+
+  if(section === "turnos"){
+    c.innerHTML = `
+      <h3>📅 Turnos</h3>
+      <input placeholder="Cliente"><br>
+      <input placeholder="Fecha"><br>
+      <input placeholder="Hora"><br>
+      <button>Guardar turno</button>
+    `;
+  }
+
+  if(section === "clientes"){
+    c.innerHTML = `
+      <h3>👤 Clientes</h3>
+      <input placeholder="Nombre"><br>
+      <input placeholder="Teléfono"><br>
+      <button>Guardar cliente</button>
+    `;
+  }
+
+  if(section === "pagos"){
+    c.innerHTML = `
+      <h3>💰 Pagos</h3>
+      <input placeholder="Cliente"><br>
+      <input placeholder="Monto"><br>
+      <button>Guardar pago</button>
+    `;
+  }
+}
+</script>
+
 </body>
 </html>
