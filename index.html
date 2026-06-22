@@ -23,7 +23,7 @@
 
 <body>
 
-<h1>🐆 Panther Tattoo</h1>
+<h1> Panther Tattoo</h1>
 
 <div id="login">
   <input id="email" placeholder="Email"><br>
@@ -33,24 +33,48 @@
 
 <div id="app">
   <h2>Dashboard</h2>
-  <button onclick="alert('Turnos')">Turnos</button>
-  <button onclick="alert('Clientes')">Clientes</button>
-  <button onclick="alert('Pagos')">Pagos</button>
+
+  <button onclick="show('turnos')">Turnos</button>
+  <button onclick="show('clientes')">Clientes</button>
+  <button onclick="show('pagos')">Pagos</button>
+
+  <div id="content"></div>
 </div>
 
 <script>
 function login(){
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
+  <script>
+function show(section){
+  const c = document.getElementById("content");
 
-  if(email && pass){
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  } else {
-    alert("Completa todo");
+  if(section === "turnos"){
+    c.innerHTML = `
+      <h3>📅 Turnos</h3>
+      <input placeholder="Cliente"><br>
+      <input placeholder="Fecha"><br>
+      <input placeholder="Hora"><br>
+      <button>Guardar turno</button>
+    `;
+  }
+
+  if(section === "clientes"){
+    c.innerHTML = `
+      <h3>👤 Clientes</h3>
+      <input placeholder="Nombre"><br>
+      <input placeholder="Teléfono"><br>
+      <button>Guardar cliente</button>
+    `;
+  }
+
+  if(section === "pagos"){
+    c.innerHTML = `
+      <h3>💰 Pagos</h3>
+      <input placeholder="Cliente"><br>
+      <input placeholder="Monto"><br>
+      <button>Guardar pago</button>
+    `;
   }
 }
 </script>
-
 </body>
 </html>
