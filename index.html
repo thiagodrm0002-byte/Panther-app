@@ -55,6 +55,9 @@
 </div>
 
 <script>
+<script>
+let selectedDate = "";
+
 function login(){
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
@@ -62,23 +65,56 @@ function login(){
   if(email && pass){
     document.getElementById("login").style.display = "none";
     document.getElementById("app").style.display = "block";
+    renderCalendar();
   } else {
     alert("Completa todo");
   }
 }
 
-function show(section){
+function renderCalendar(){
   const c = document.getElementById("content");
 
-  if(section === "turnos"){
-    c.innerHTML = `
-      <h3>📅 Turnos</h3>
-      <input placeholder="Cliente"><br>
-      <input placeholder="Fecha"><br>
-      <input placeholder="Hora"><br>
-      <button>Guardar turno</button>
-    `;
+  let html = "<h3>📅 Calendario Panther</h3><div style='display:grid;grid-template-columns:repeat(7,1fr);gap:5px;'>";
+
+  for(let i=1;i<=30;i++){
+    html += `<button onclick="selectDay(${i})">${i}</button>`;
   }
+
+  html += "</div>";
+
+  c.innerHTML = html;
+}
+
+function selectDay(day){
+  selectedDate = day;
+
+  const c = document.getElementById("content");
+
+  c.innerHTML = `
+    <h3>📅 Día ${day}</h3>
+
+    <input id="client" placeholder="Cliente"><br>
+    <input id="time" placeholder="Hora"><br>
+
+    <button onclick="saveTurn()">Guardar turno</button>
+    <br><br>
+
+    <button onclick="renderCalendar()">Volver al calendario</button>
+  `;
+}
+
+function saveTurn(){
+  const client = document.getElementById("client").value;
+  const time = document.getElementById("time").value;
+
+  alert(`Turno guardado:
+Día ${selectedDate}
+Cliente: ${client}
+Hora: ${time}`);
+
+  renderCalendar();
+}
+</script>
 
   if(section === "clientes"){
     c.innerHTML = `
