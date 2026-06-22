@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Panther Studio</title>
+<title>Panther SaaS</title>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,22 +14,27 @@
 <div id="app">
 
 <!-- SIDEBAR -->
-<div class="sidebar">
+<aside class="sidebar">
 
-<div class="logo">🐆 Panther</div>
+<div class="logo">Panther Tatto</div>
 
 <button onclick="renderCalendar()">📅 Calendario</button>
 <button onclick="addArtist()">🎨 Tatuadores</button>
-<button onclick="clearAll()">🧹 Limpiar</button>
+<button onclick="showClients()">👤 Clientes</button>
 
-<div class="artists" id="artists"></div>
 
+<div id="artistList"></div>
+
+<div class="user">
+Titi (Owner)
 </div>
 
-<!-- CENTER -->
-<div class="calendar">
+</aside>
 
-<div class="header">
+<!-- CALENDARIO -->
+<section class="calendar">
+
+<div class="top">
 <button onclick="prevMonth()">‹</button>
 <h2 id="monthTitle"></h2>
 <button onclick="nextMonth()">›</button>
@@ -41,18 +46,18 @@
 
 <div id="calendarGrid"></div>
 
-</div>
+</section>
 
-<!-- RIGHT -->
-<div class="agenda">
+<!-- AGENDA -->
+<aside class="agenda">
 
-<h2 id="selectedDay">Día</h2>
+<h2 id="selectedDay">Seleccioná un día</h2>
 
 <button onclick="openModal()">+ Nuevo turno</button>
 
 <div id="agendaList"></div>
 
-</div>
+</aside>
 
 </div>
 
