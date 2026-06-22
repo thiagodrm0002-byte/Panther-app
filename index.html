@@ -2,25 +2,23 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Panther SaaS Pro</title>
+<title>Panther Studio SaaS</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
 
-<!-- AUTH -->
+<!-- LOGIN -->
 <div id="auth">
-  <div class="card">
-    <h2>🐆 Panther Tatto</h2>
+  <div class="loginBox">
+    <h1>🐆 Panther Studio</h1>
 
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+    <input id="username" placeholder="Usuario">
+    <input id="password" type="password" placeholder="Contraseña">
 
     <button onclick="login()">Entrar</button>
-    <button onclick="register()">Registro</button>
-    <button onclick="recover()">Recuperar</button>
 
     <p id="msg"></p>
   </div>
@@ -28,16 +26,33 @@
 
 <!-- APP -->
 <div id="app">
-  <div class="topbar">
-    <h3 id="roleTitle"></h3>
 
-    <button onclick="showCalendar()">Calendario</button>
-    <button onclick="showResources()">Tatuadores</button>
-    <button onclick="showClients()">Clientes</button>
-    <button onclick="showPayments()">Pagos</button>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>PANTHER</h2>
+
+    <button onclick="showCalendar()">📅 Turnos</button>
+    <button onclick="showClients()">👤 Clientes</button>
+    <button onclick="showPayments()">💰 Pagos</button>
+    <button onclick="showArtists()">🎨 Equipo</button>
+    <button onclick="logout()">Salir</button>
+
+    <div class="role" id="roleBox"></div>
   </div>
 
-  <div id="content"></div>
+  <!-- CALENDARIO -->
+  <div class="main">
+    <div id="calendar"></div>
+  </div>
+
+  <!-- AGENDA -->
+  <div class="right">
+    <h3 id="dayTitle">Agenda</h3>
+    <div id="agenda"></div>
+
+    <button onclick="openModal()">+ Nuevo turno</button>
+  </div>
+
 </div>
 
 <script src="app.js"></script>
