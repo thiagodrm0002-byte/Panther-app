@@ -5,18 +5,13 @@ background:#0a0a0a;
 color:#f5c542;
 }
 
-.center{
-display:flex;
-height:100vh;
-justify-content:center;
-align-items:center;
-}
+#app{display:none}
 
-.loginCard{
+.card{
 background:#1c1c1c;
-padding:20px;
+padding:15px;
+margin:10px;
 border-radius:12px;
-width:280px;
 }
 
 input,button{
@@ -36,36 +31,44 @@ cursor:pointer;
 button:hover{background:#333}
 
 .topbar{
-padding:10px;
 background:#111;
-position:sticky;
-top:0;
-}
-
-.menu button{
-margin:3px;
-width:auto;
+padding:10px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:6px;
+grid-template-columns:repeat(7,1fr);
+gap:5px;
 padding:10px;
 }
 
-.card{
+.day{
 background:#1c1c1c;
 padding:10px;
-border-radius:10px;
-margin:5px;
+text-align:center;
+border-radius:8px;
 cursor:pointer;
 }
 
-.free{background:green;color:white}
-.pending{background:orange;color:black}
-.booked{background:red;color:white}
-
-.panel{
+/* MATRIX (CINE STYLE) */
+.matrix{
+display:grid;
+grid-template-columns:120px repeat(4,1fr);
+gap:5px;
 padding:10px;
 }
+
+.cell{
+padding:10px;
+text-align:center;
+border-radius:8px;
+cursor:pointer;
+}
+
+.free{background:#2a2a2a}
+.pending{background:orange;color:black}
+.booked{background:red;color:white}
+.confirmed{background:green;color:white}
