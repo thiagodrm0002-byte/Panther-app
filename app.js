@@ -5,6 +5,7 @@ const sb = supabase.createClient(
 
 let user=null;
 let profile=null;
+let selectedDay=null;
 
 /* ================= AUTH ================= */
 
@@ -14,7 +15,7 @@ email:email.value,
 password:password.value
 });
 
-if(error){msg("error login");return;}
+if(error){msg("Error login");return;}
 
 user=data.user;
 await loadProfile();
@@ -26,15 +27,15 @@ await sb.auth.signUp({
 email:email.value,
 password:password.value
 });
-msg("usuario creado");
+msg("Usuario creado");
 }
 
 async function recover(){
 await sb.auth.resetPasswordForEmail(email.value);
-msg("mail enviado");
+msg("Mail enviado");
 }
 
-/* SESSION */
+/* SESSION AUTO */
 
 (async()=>{
 const {data}=await sb.auth.getUser();
@@ -45,8 +46,12 @@ start();
 }
 })();
 
+/* PROFILE / ROLES */
+
 async function loadProfile(){
-const {data}=await sb.from("profiles")
+
+const {data}=await sb
+.from("profiles")
 .select("*")
 .eq("id",user.id)
 .single();
@@ -67,163 +72,133 @@ profile={role:"admin"};
 function start(){
 auth.style.display="none";
 app.style.display="block";
-title.innerText="Panel "+profile.role;
-
-renderCalendar();
+roleTitle.innerText=profile.role.toUpperCase();
+showCalendar();
 }
 
-/* ================= CALENDAR PRO ================= */
+/* ================= CALENDAR MONTH ================= */
 
-function getSlots(){
-return ["10:05","12:15","14:30","16:00","18:00"];
-}
-
-async function renderCalendar(){
+function showCalendar(){
 
 let html="<div class='grid'>";
 
-for(let i=1;i<=25;i++){
-html+=`<div class='card' onclick='openDay(${i})'>Día ${i}</div>`;
+for(let i=1;i<=30;i++){
+html+=`<div class='day' onclick='openDay(${i})'>${i}</div>`;
 }
+
+html+="</div>";
+content.innerHTML=html;
+}
+
+/* ================= RESOURCES (CINE STYLE) ================= */
+
+const tatuadores=["ALEX","MARTIN","LUCA","SOFI"];
+
+async function openDay(day){
+
+selectedDay=day;
+
+const {data}=await sb
+.from("appointments")
+.select("*")
+.eq("date","Dia "+day);
+
+let html="<div class='matrix'>";
+
+// header
+html+="<div></div>";
+tatuadores.forEach(t=>{
+html+=`<div class='cell'>${t}</div>`;
+});
+
+// rows
+let slots=["10:00","11:00","12:00","13:00","14:00"];
+
+slots.forEach(time=>{
+html+=`<div class='cell'>${time}</div>`;
+
+tatuadores.forEach(t=>{
+let found=data.find(d=>d.time===time && d.artist===t);
+
+let cls="free";
+let label="";
+
+if(found){
+cls=found.status;
+label="●";
+}
+
+html+=`
+<div class='cell ${cls}' onclick="book('${time}','${t}')">
+${label}
+</div>`;
+});
+});
 
 html+="</div>";
 
 content.innerHTML=html;
 }
 
-async function openDay(day){
+/* ================= BOOK ================= */
 
-const {data}=await sb.from("appointments")
-.select("*")
-.eq("date","Dia "+day);
+async function book(time,artist){
 
-let slots=getSlots();
-
-let html=`<div class='panel'><h3>Día ${day}</h3>`;
-
-slots.forEach(s=>{
-
-let found=data.find(d=>d.time===s);
-
-let cls="free";
-let label="Libre";
-
-if(found){
-cls=found.status;
-label=found.client;
-}
-
-html+=`
-<div class="card ${cls}" onclick="book('${day}','${s}')">
-${s} - ${label}
-</div>
-`;
-});
-
-html+=`
-<input id="client" placeholder="Cliente">
-<input id="deposit" placeholder="Seña (opcional)">
-<button onclick="save('${day}')">Guardar turno</button>
-</div>`;
-
-content.innerHTML=html;
-}
-
-async function book(day,time){
-let client=prompt("cliente");
+let client=prompt("Cliente");
+let status="pending";
 
 await sb.from("appointments").insert([{
-date:"Dia "+day,
+date:"Dia "+selectedDay,
 time,
+artist,
 client,
-status:"pending",
+status,
 user_id:user.id
 }]);
 
-openDay(day);
-}
-
-/* SAVE MANUAL */
-
-async function save(day){
-
-await sb.from("appointments").insert([{
-date:"Dia "+day,
-time:time.value,
-client:client.value,
-status:"pending",
-deposit:deposit.value || 0,
-user_id:user.id
-}]);
-
-openDay(day);
+openDay(selectedDay);
 }
 
 /* ================= CLIENTS ================= */
 
-function renderClients(){
+function showClients(){
 content.innerHTML=`
-<h3>Clientes</h3>
-<input id="cname" placeholder="Nombre">
-<input id="cphone" placeholder="Tel">
+<div class="card">
+<input id="cname" placeholder="Cliente">
 <button onclick="saveClient()">Guardar</button>
+</div>
 `;
 }
 
 async function saveClient(){
 await sb.from("clients").insert([{
 name:cname.value,
-phone:cphone.value,
 user_id:user.id
 }]);
 }
 
 /* ================= PAYMENTS ================= */
 
-function renderPayments(){
+function showPayments(){
 content.innerHTML=`
-<h3>Pagos</h3>
+<div class="card">
 <input id="pclient" placeholder="Cliente">
-<input id="pamount" placeholder="Monto">
-<button onclick="savePayment()">Guardar</button>
+<input id="amount" placeholder="Monto">
+<button onclick="savePay()">Guardar</button>
+</div>
 `;
 }
 
-async function savePayment(){
+async function savePay(){
 await sb.from("payments").insert([{
 client:pclient.value,
-amount:pamount.value,
+amount:amount.value,
 status:"pending",
 user_id:user.id
 }]);
 }
 
-/* ================= FILTERS ================= */
-
-function renderFilters(){
-content.innerHTML=`
-<h3>Filtros</h3>
-<input id="fdate" placeholder="Dia">
-<input id="fclient" placeholder="Cliente">
-<button onclick="search()">Buscar</button>
-`;
-}
-
-async function search(){
-
-let q=sb.from("appointments").select("*");
-
-if(fdate.value) q=q.eq("date",fdate.value);
-if(fclient.value) q=q.eq("client",fclient.value);
-
-const {data}=await q;
-
-content.innerHTML=data.map(t=>`
-<div class="card">${t.client} - ${t.time} - ${t.status}</div>
-`).join("");
-}
-
-/* UTIL */
+/* ================= UTIL ================= */
 
 function msg(t){
 document.getElementById("msg").innerText=t;
