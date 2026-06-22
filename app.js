@@ -7,199 +7,139 @@ let user=null;
 let profile=null;
 let selectedDay=null;
 
-/* ================= AUTH ================= */
+/* USERS LOGIN (PROFILES TABLE) */
 
 async function login(){
-const {data,error}=await sb.auth.signInWithPassword({
-email:email.value,
-password:password.value
-});
 
-if(error){msg("Error login");return;}
+const username = document.getElementById("username").value;
+const password = document.getElementById("password").value;
 
-user=data.user;
-await loadProfile();
-start();
+const {data} = await sb
+.from("profiles")
+.select("*")
+.eq("username",username)
+.eq("password",password)
+.eq("active",true)
+.single();
+
+if(!data){
+document.getElementById("msg").innerText="Login incorrecto";
+return;
 }
 
-async function register(){
-await sb.auth.signUp({
-email:email.value,
-password:password.value
-});
-msg("Usuario creado");
+user=data;
+
+localStorage.setItem("user",JSON.stringify(user));
+
+startApp();
 }
 
-async function recover(){
-await sb.auth.resetPasswordForEmail(email.value);
-msg("Mail enviado");
-}
+/* AUTO LOGIN */
 
-/* SESSION AUTO */
-
-(async()=>{
-const {data}=await sb.auth.getUser();
-if(data.user){
-user=data.user;
-await loadProfile();
-start();
+(function(){
+const saved = localStorage.getItem("user");
+if(saved){
+user=JSON.parse(saved);
+startApp();
 }
 })();
 
-/* PROFILE / ROLES */
+function startApp(){
+document.getElementById("auth").style.display="none";
+document.getElementById("app").style.display="grid";
 
-async function loadProfile(){
+document.getElementById("roleBox").innerText =
+"ROL: " + user.role;
 
-const {data}=await sb
-.from("profiles")
-.select("*")
-.eq("id",user.id)
-.single();
-
-profile=data;
-
-if(!profile){
-await sb.from("profiles").insert([{
-id:user.id,
-role:"admin"
-}]);
-profile={role:"admin"};
-}
-}
-
-/* ================= START ================= */
-
-function start(){
-auth.style.display="none";
-app.style.display="block";
-roleTitle.innerText=profile.role.toUpperCase();
 showCalendar();
 }
 
-/* ================= CALENDAR MONTH ================= */
+/* LOGOUT */
+
+function logout(){
+localStorage.removeItem("user");
+location.reload();
+}
+
+/* CALENDAR */
 
 function showCalendar(){
 
-let html="<div class='grid'>";
+let html="<div class='calendar'>";
 
 for(let i=1;i<=30;i++){
 html+=`<div class='day' onclick='openDay(${i})'>${i}</div>`;
 }
 
 html+="</div>";
-content.innerHTML=html;
+
+document.getElementById("calendar").innerHTML=html;
 }
 
-/* ================= RESOURCES (CINE STYLE) ================= */
-
-const tatuadores=["ALEX","MARTIN","LUCA","SOFI"];
+/* OPEN DAY */
 
 async function openDay(day){
 
 selectedDay=day;
+
+document.getElementById("dayTitle").innerText="Día "+day;
 
 const {data}=await sb
 .from("appointments")
 .select("*")
 .eq("date","Dia "+day);
 
-let html="<div class='matrix'>";
+let html="";
 
-// header
-html+="<div></div>";
-tatuadores.forEach(t=>{
-html+=`<div class='cell'>${t}</div>`;
-});
-
-// rows
-let slots=["10:00","11:00","12:00","13:00","14:00"];
-
-slots.forEach(time=>{
-html+=`<div class='cell'>${time}</div>`;
-
-tatuadores.forEach(t=>{
-let found=data.find(d=>d.time===time && d.artist===t);
-
-let cls="free";
-let label="";
-
-if(found){
-cls=found.status;
-label="●";
-}
-
+if(data){
+data.forEach(t=>{
 html+=`
-<div class='cell ${cls}' onclick="book('${time}','${t}')">
-${label}
-</div>`;
+<div class="card ${t.status}">
+<b>${t.time}</b><br>
+${t.client}<br>
+${t.artist_name || ""}
+</div>
+`;
 });
-});
-
-html+="</div>";
-
-content.innerHTML=html;
 }
 
-/* ================= BOOK ================= */
+document.getElementById("agenda").innerHTML=html;
+}
 
-async function book(time,artist){
+/* CREATE TURN */
 
-let client=prompt("Cliente");
-let status="pending";
+async function openModal(){
+
+const client=prompt("Cliente");
+const time=prompt("Hora (14:15)");
+const artist=prompt("Tatuador");
 
 await sb.from("appointments").insert([{
-date:"Dia "+selectedDay,
-time,
-artist,
 client,
-status,
+time,
+artist_name:artist,
+date:"Dia "+selectedDay,
+status:"pending",
 user_id:user.id
 }]);
 
 openDay(selectedDay);
 }
 
-/* ================= CLIENTS ================= */
+/* CLIENTS */
 
 function showClients(){
-content.innerHTML=`
-<div class="card">
-<input id="cname" placeholder="Cliente">
-<button onclick="saveClient()">Guardar</button>
-</div>
-`;
+alert("Clientes en siguiente módulo");
 }
 
-async function saveClient(){
-await sb.from("clients").insert([{
-name:cname.value,
-user_id:user.id
-}]);
-}
-
-/* ================= PAYMENTS ================= */
+/* PAYMENTS */
 
 function showPayments(){
-content.innerHTML=`
-<div class="card">
-<input id="pclient" placeholder="Cliente">
-<input id="amount" placeholder="Monto">
-<button onclick="savePay()">Guardar</button>
-</div>
-`;
+alert("Pagos en siguiente módulo");
 }
 
-async function savePay(){
-await sb.from("payments").insert([{
-client:pclient.value,
-amount:amount.value,
-status:"pending",
-user_id:user.id
-}]);
-}
+/* ARTISTS */
 
-/* ================= UTIL ================= */
-
-function msg(t){
-document.getElementById("msg").innerText=t;
+function showArtists(){
+alert("Equipo en siguiente módulo");
 }
