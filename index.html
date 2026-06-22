@@ -43,38 +43,13 @@
 
 <script>
 function login(){
-  <script>
-function show(section){
-  const c = document.getElementById("content");
+function login(){
+  alert("BOTÓN LOGIN FUNCIONA");
 
-  if(section === "turnos"){
-    c.innerHTML = `
-      <h3>📅 Turnos</h3>
-      <input placeholder="Cliente"><br>
-      <input placeholder="Fecha"><br>
-      <input placeholder="Hora"><br>
-      <button>Guardar turno</button>
-    `;
-  }
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
 
-  if(section === "clientes"){
-    c.innerHTML = `
-      <h3>👤 Clientes</h3>
-      <input placeholder="Nombre"><br>
-      <input placeholder="Teléfono"><br>
-      <button>Guardar cliente</button>
-    `;
-  }
-
-  if(section === "pagos"){
-    c.innerHTML = `
-      <h3>💰 Pagos</h3>
-      <input placeholder="Cliente"><br>
-      <input placeholder="Monto"><br>
-      <button>Guardar pago</button>
-    `;
-  }
+  alert("Email: " + email + " Pass: " + pass);
 }
-</script>
 </body>
 </html>
