@@ -4,85 +4,54 @@ const sb = supabase.createClient(
 );
 
 let user=null;
-let profile=null;
 let selectedDay=null;
 
-/* USERS LOGIN (PROFILES TABLE) */
-
+/* LOGIN */
 async function login(){
 
-const username = document.getElementById("username").value;
-const password = document.getElementById("password").value;
+const u=document.getElementById("username").value;
+const p=document.getElementById("password").value;
 
-const {data} = await sb
+const {data}=await sb
 .from("profiles")
 .select("*")
-.eq("username",username)
-.eq("password",password)
+.eq("username",u)
+.eq("password",p)
 .eq("active",true)
 .single();
 
 if(!data){
-document.getElementById("msg").innerText="Login incorrecto";
+alert("Login incorrecto");
 return;
 }
 
 user=data;
 
-localStorage.setItem("user",JSON.stringify(user));
-
-startApp();
-}
-
-/* AUTO LOGIN */
-
-(function(){
-const saved = localStorage.getItem("user");
-if(saved){
-user=JSON.parse(saved);
-startApp();
-}
-})();
-
-function startApp(){
-document.getElementById("auth").style.display="none";
+document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="grid";
 
-document.getElementById("roleBox").innerText =
-"ROL: " + user.role;
+document.getElementById("role").innerText=user.role;
 
-showCalendar();
-}
-
-/* LOGOUT */
-
-function logout(){
-localStorage.removeItem("user");
-location.reload();
+initCalendar();
 }
 
 /* CALENDAR */
+function initCalendar(){
 
-function showCalendar(){
-
-let html="<div class='calendar'>";
-
+let html="";
 for(let i=1;i<=30;i++){
 html+=`<div class='day' onclick='openDay(${i})'>${i}</div>`;
 }
-
-html+="</div>";
 
 document.getElementById("calendar").innerHTML=html;
 }
 
 /* OPEN DAY */
-
 async function openDay(day){
 
 selectedDay=day;
 
-document.getElementById("dayTitle").innerText="Día "+day;
+document.getElementById("dayTitle")=`Día ${day}`;
 
 const {data}=await sb
 .from("appointments")
@@ -91,55 +60,54 @@ const {data}=await sb
 
 let html="";
 
-if(data){
 data.forEach(t=>{
 html+=`
 <div class="card ${t.status}">
 <b>${t.time}</b><br>
 ${t.client}<br>
-${t.artist_name || ""}
+${t.artist_name}
 </div>
 `;
 });
-}
 
 document.getElementById("agenda").innerHTML=html;
 }
 
-/* CREATE TURN */
+/* MODAL */
+function openModal(){
+document.getElementById("modal").style.display="flex";
+}
 
-async function openModal(){
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
 
-const client=prompt("Cliente");
-const time=prompt("Hora (14:15)");
-const artist=prompt("Tatuador");
+/* SAVE TURN */
+async function saveTurn(){
+
+const client=m_client.value;
+const time=m_time.value;
+const artist=m_artist.value;
+const deposit=m_deposit.value;
+
+let status="booked";
+if(deposit && deposit!="") status="pending";
 
 await sb.from("appointments").insert([{
 client,
 time,
 artist_name:artist,
+deposit,
+status,
 date:"Dia "+selectedDay,
-status:"pending",
 user_id:user.id
 }]);
 
+closeModal();
 openDay(selectedDay);
 }
 
-/* CLIENTS */
-
-function showClients(){
-alert("Clientes en siguiente módulo");
-}
-
-/* PAYMENTS */
-
-function showPayments(){
-alert("Pagos en siguiente módulo");
-}
-
-/* ARTISTS */
-
-function showArtists(){
-alert("Equipo en siguiente módulo");
+/* LOGOUT */
+function logout(){
+location.reload();
 }
