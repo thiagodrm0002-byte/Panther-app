@@ -9,23 +9,22 @@ color:#f5c542;
 #login{
 height:100vh;
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 }
 
-.loginBox{
+.loginCard{
 background:#111;
 padding:25px;
 border-radius:15px;
-text-align:center;
 width:280px;
+text-align:center;
 }
 
 /* APP LAYOUT */
 #app{
 display:none;
 height:100vh;
-display:grid;
 grid-template-columns:220px 1fr 320px;
 }
 
@@ -52,19 +51,12 @@ background:#2a2a2a;
 }
 
 /* CALENDAR */
-.calendarPanel{
+.calendar{
 padding:15px;
 overflow:auto;
 }
 
-#calendarHeader{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;
-}
-
-#calendar{
+#grid{
 display:grid;
 grid-template-columns:repeat(7,1fr);
 gap:8px;
@@ -72,7 +64,7 @@ gap:8px;
 
 .day{
 background:#1c1c1c;
-padding:20px;
+padding:18px;
 text-align:center;
 border-radius:10px;
 cursor:pointer;
@@ -83,7 +75,7 @@ background:#2a2a2a;
 }
 
 /* AGENDA */
-.agendaPanel{
+.agenda{
 background:#111;
 padding:15px;
 overflow:auto;
@@ -98,16 +90,12 @@ align-items:center;
 .card{
 background:#1c1c1c;
 padding:10px;
-margin-top:8px;
+margin:6px 0;
 border-radius:10px;
 }
 
-.free{color:#4dff88}
-.pending{color:#f5c542}
-.booked{color:#ff4d4d}
-
 /* MODAL */
-.modal{
+#modal{
 display:none;
 position:fixed;
 top:0;
@@ -125,3 +113,7 @@ padding:20px;
 border-radius:15px;
 width:300px;
 }
+
+.free{color:#4dff88}
+.pending{color:#f5c542}
+.booked{color:#ff4d4d}
