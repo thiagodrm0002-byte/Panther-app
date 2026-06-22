@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Panther SaaS Studio</title>
+<title>Panther Studio</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -13,71 +14,33 @@
 
 <div id="app">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+<!-- LOGIN -->
+<div id="loginView">
+<h2>🐆 Panther Studio</h2>
 
-<div class="logo">🐆 PANTHER</div>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
-<button onclick="showView('calendar')">📅 Turnos</button>
-<button onclick="showView('clients')">👤 Clientes</button>
-<button onclick="showView('payments')">💰 Pagos</button>
-<button onclick="showView('team')">🎨 Equipo</button>
-
-<div class="user">
-<span id="userRole">Owner</span>
+<button onclick="login()">Entrar</button>
 </div>
 
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-<!-- CALENDAR -->
-<div id="calendarView" class="view active">
+<!-- APP -->
+<div id="mainApp" style="display:none">
 
 <div class="topbar">
-<button onclick="prevMonth()">‹</button>
-<h2 id="monthTitle"></h2>
-<button onclick="nextMonth()">›</button>
+<h3 id="monthTitle"></h3>
 </div>
 
+<div class="calendar">
 <div id="calendarGrid"></div>
-
 </div>
 
-<!-- CLIENTS -->
-<div id="clientsView" class="view">
-<h2>Clientes</h2>
-<div id="clientsList"></div>
-</div>
-
-<!-- PAYMENTS -->
-<div id="paymentsView" class="view">
-<h2>Pagos</h2>
-<div id="paymentsList"></div>
-</div>
-
-<!-- TEAM -->
-<div id="teamView" class="view">
-<h2>Equipo</h2>
-
-<input id="newArtist" placeholder="Nuevo tatuador">
-<button onclick="addArtist()">Agregar</button>
-
-<div id="artistsList"></div>
-</div>
-
-</div>
-
-<!-- AGENDA -->
 <div class="agenda">
+<h3 id="selectedDay">Día</h3>
 
-<h2 id="selectedDay">Día</h2>
+<button onclick="openModal()">+ Turno</button>
 
-<button onclick="openModal()">+ Nuevo turno</button>
-
-<div id="appointmentsList"></div>
-
+<div id="appointments"></div>
 </div>
 
 </div>
@@ -86,10 +49,10 @@
 <div id="modal">
 <div class="modal">
 
-<input id="client" placeholder="Cliente">
-<input id="time" placeholder="Hora">
+<input id="client">
+<input id="time">
 
-<select id="artistSelect"></select>
+<select id="artist"></select>
 
 <select id="status">
 <option value="green">Disponible</option>
@@ -97,7 +60,7 @@
 <option value="red">Ocupado</option>
 </select>
 
-<button onclick="saveAppointment()">Guardar</button>
+<button onclick="save()">Guardar</button>
 <button onclick="closeModal()">Cerrar</button>
 
 </div>
