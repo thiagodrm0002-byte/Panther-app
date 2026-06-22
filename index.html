@@ -6,279 +6,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#0a0a0a;
-  color:#f5c542;
-  text-align:center;
-}
-
-#app{display:none;}
-
-button{
-  padding:10px;
-  margin:5px;
-  border-radius:10px;
-  border:none;
-  background:#1c1c1c;
-  color:#f5c542;
-  cursor:pointer;
-}
-
-button:hover{background:#333;}
-
-input,select{
-  padding:10px;
-  margin:5px;
-  border-radius:8px;
-  border:none;
-}
-
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
-  padding:10px;
-}
-
-.day{
-  background:#1c1c1c;
-  padding:15px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.card{
-  background:#1c1c1c;
-  margin:10px auto;
-  width:80%;
-  padding:10px;
-  border-radius:10px;
-  text-align:left;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<h1>🐆 PANTHER SAAS</h1>
-
 <!-- LOGIN -->
-<div id="login">
-  <input id="email" placeholder="Email"><br>
-  <input id="password" type="password" placeholder="Password"><br>
-  <button onclick="auth()">Entrar</button>
-  <button onclick="resetPassword()">Recuperar</button>
-  <p id="msg"></p>
+<div id="auth" class="center">
+  <div class="loginCard">
+    <h2>🐆 Panther SaaS</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">Entrar</button>
+    <button onclick="register()">Registro</button>
+    <button onclick="recover()">Recuperar</button>
+
+    <p id="msg"></p>
+  </div>
 </div>
 
 <!-- APP -->
 <div id="app">
+  <div class="topbar">
+    <h2 id="title"></h2>
 
-  <h2 id="title"></h2>
-
-  <button onclick="showCalendar()">📅 Turnos</button>
-  <button onclick="showClients()">👤 Clientes</button>
-  <button onclick="showPayments()">💰 Pagos</button>
-  <button onclick="logout()">Salir</button>
+    <div class="menu">
+      <button onclick="renderCalendar()">📅 Turnos</button>
+      <button onclick="renderClients()">👤 Clientes</button>
+      <button onclick="renderPayments()">💰 Pagos</button>
+      <button onclick="renderFilters()">🔎 Filtros</button>
+    </div>
+  </div>
 
   <div id="content"></div>
 </div>
 
-<script>
-
-const supabaseUrl = "https://muckmihrgifzxazghngw.supabase.co";
-const supabaseKey = "sb_publishable_wNdAJjCUenMzrYSWMelwHw_-mbvowyW";
-
-const sb = supabase.createClient(supabaseUrl, supabaseKey);
-
-let user = null;
-let profile = null;
-
-/* ================= AUTH ================= */
-
-async function auth(){
-  const email = emailInput().value;
-  const password = passInput().value;
-  const msg = document.getElementById("msg");
-
-  const login = await sb.auth.signInWithPassword({ email, password });
-
-  if(!login.error){
-    user = login.data.user;
-    await loadProfile();
-    start();
-    return;
-  }
-
-  const signup = await sb.auth.signUp({ email, password });
-
-  if(signup.error){
-    msg.innerText = signup.error.message;
-    return;
-  }
-
-  msg.innerText = "Usuario creado, volvé a entrar";
-}
-
-function emailInput(){ return document.getElementById("email"); }
-function passInput(){ return document.getElementById("password"); }
-
-/* ================= PROFILE ================= */
-
-async function loadProfile(){
-  const { data } = await sb
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  profile = data;
-
-  if(!profile){
-    await sb.from("profiles").insert([{
-      id: user.id,
-      role: "admin",
-      name: "User"
-    }]);
-
-    profile = { role:"admin", name:"User" };
-  }
-}
-
-/* ================= START ================= */
-
-function start(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("app").style.display="block";
-
-  document.getElementById("title").innerText =
-    profile.role === "admin" ? "Admin Panel" : "Tatuador Panel";
-
-  showCalendar();
-}
-
-/* ================= CALENDAR ================= */
-
-function showCalendar(){
-  let html = "<h3>Calendario</h3><div class='calendar'>";
-
-  for(let i=1;i<=30;i++){
-    html += `<div class='day' onclick="openDay(${i})">Día ${i}</div>`;
-  }
-
-  html += "</div>";
-
-  document.getElementById("content").innerHTML = html;
-}
-
-/* ================= DAY ================= */
-
-async function openDay(day){
-
-  const { data } = await sb
-    .from("appointments")
-    .select("*")
-    .eq("date", "Dia "+day);
-
-  let html = `
-    <h3>Día ${day}</h3>
-    <input id="client" placeholder="Cliente">
-    <input id="time" placeholder="Hora">
-    <button onclick="save(${day})">Guardar</button>
-  `;
-
-  data.forEach(t=>{
-    html += `
-      <div class="card">
-        ${t.client} - ${t.time}<br>
-        ${t.artist_name || ""}
-      </div>
-    `;
-  });
-
-  document.getElementById("content").innerHTML = html;
-}
-
-async function save(day){
-
-  const client = document.getElementById("client").value;
-  const time = document.getElementById("time").value;
-
-  await sb.from("appointments").insert([{
-    client,
-    date:"Dia "+day,
-    time,
-    status:"pending",
-    artist_name:"Sin asignar",
-    deposit:"",
-    user_id:user.id
-  }]);
-
-  openDay(day);
-}
-
-/* ================= CLIENTS ================= */
-
-function showClients(){
-  document.getElementById("content").innerHTML = `
-    <h3>Clientes</h3>
-    <input id="cname" placeholder="Nombre">
-    <input id="cphone" placeholder="Tel">
-    <input id="cnotes" placeholder="Notas">
-    <button onclick="saveClient()">Guardar</button>
-  `;
-}
-
-async function saveClient(){
-  await sb.from("clients").insert([{
-    name: cname.value,
-    phone: cphone.value,
-    notes: cnotes.value,
-    user_id:user.id
-  }]);
-}
-
-/* ================= PAYMENTS ================= */
-
-function showPayments(){
-  document.getElementById("content").innerHTML = `
-    <h3>Pagos</h3>
-    <input id="pclient" placeholder="Cliente">
-    <input id="pamount" placeholder="Monto">
-    <button onclick="savePayment()">Guardar</button>
-  `;
-}
-
-async function savePayment(){
-  await sb.from("payments").insert([{
-    client:pclient.value,
-    amount:pamount.value,
-    status:"pending",
-    user_id:user.id
-  }]);
-}
-
-/* ================= SESSION ================= */
-
-async function logout(){
-  await sb.auth.signOut();
-  location.reload();
-}
-
-/* auto login */
-(async ()=>{
-  const { data } = await sb.auth.getUser();
-  if(data.user){
-    user = data.user;
-    await loadProfile();
-    start();
-  }
-})();
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
