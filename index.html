@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Panther Tattoo SaaS</title>
+<title>Panther SaaS Pro</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
@@ -29,7 +29,7 @@ button{
 
 button:hover{background:#333;}
 
-input{
+input, select{
   padding:10px;
   margin:5px;
   border-radius:8px;
@@ -61,7 +61,14 @@ input{
 
 .pending{color:#f5c542;}
 .booked{color:#ff4d4d;}
-.free{color:#4dff88;}
+.ok{color:#4dff88;}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin:10px;
+}
 </style>
 </head>
 
@@ -69,23 +76,26 @@ input{
 
 <h1>🐆 PANTHER SAAS</h1>
 
-<!-- LOGIN -->
+<!-- AUTH -->
 <div id="login">
+
+  <h2>Login / Registro</h2>
+
   <input id="email" placeholder="Email"><br>
   <input id="password" type="password" placeholder="Password"><br>
-  <button onclick="login()">Entrar</button>
+
+  <button onclick="auth()">Entrar</button>
+  <button onclick="resetPassword()">Recuperar contraseña</button>
+
+  <p id="msg"></p>
 </div>
 
 <!-- APP -->
 <div id="app">
 
-  <h2>Panel Empresa</h2>
+  <h2 id="panelTitle">Panel</h2>
 
-  <button onclick="showCalendar()">📅 Calendario</button>
-  <button onclick="loadAppointments()">📋 Turnos</button>
-  <button onclick="showClients()">👤 Clientes</button>
-  <button onclick="showPayments()">💰 Pagos</button>
-  <button onclick="showFilters()">🔎 Filtros</button>
+  <div id="menu"></div>
 
   <div id="content"></div>
 
@@ -93,37 +103,146 @@ input{
 
 <script>
 const supabaseUrl = "https://muckmihrgifzxazghngw.supabase.co";
-const supabaseKey = "sb_publishable_wNdAJjCUenMzrYSWMelwHw_-mbvowyW";
+const supabaseKey = "TU_KEY";
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 let user = null;
+let profile = null;
+let selectedArtist = null;
 
-/* ---------------- LOGIN ---------------- */
-async function login(){
+/* ================= AUTH ================= */
+
+async function auth(){
+
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+  const msg = document.getElementById("msg");
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error){
-    alert("Error login");
+  if(!email || !password){
+    msg.innerText = "Completa todo";
     return;
   }
 
-  user = data.user;
+  const login = await supabase.auth.signInWithPassword({
+    email, password
+  });
 
+  if(!login.error){
+    user = login.data.user;
+    await loadProfile();
+    startApp();
+    return;
+  }
+
+  const signup = await supabase.auth.signUp({
+    email, password
+  });
+
+  if(signup.error){
+    msg.innerText = signup.error.message;
+    return;
+  }
+
+  msg.innerText = "Usuario creado. Revisa email o vuelve a entrar.";
+}
+
+async function resetPassword(){
+  const email = document.getElementById("email").value;
+
+  await supabase.auth.resetPasswordForEmail(email);
+  alert("Mail enviado");
+}
+
+/* ================= SESSION ================= */
+
+async function loadSession(){
+  const { data } = await supabase.auth.getUser();
+
+  if(data.user){
+    user = data.user;
+    await loadProfile();
+    startApp();
+  }
+}
+loadSession();
+
+async function loadProfile(){
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  profile = data;
+}
+
+/* ================= APP START ================= */
+
+function startApp(){
   document.getElementById("login").style.display="none";
   document.getElementById("app").style.display="block";
+
+  if(profile.role === "admin"){
+    loadAdmin();
+  } else {
+    loadTattoo();
+  }
+}
+
+/* ================= PANELS ================= */
+
+async function loadAdmin(){
+  document.getElementById("panelTitle").innerText = "Admin Panel";
+
+  document.getElementById("menu").innerHTML = `
+    <button onclick="loadArtistsTabs()">🎨 Tatuadores</button>
+    <button onclick="showCalendar()">📅 Calendario</button>
+    <button onclick="loadAppointments()">📋 Turnos</button>
+    <button onclick="showClients()">👤 Clientes</button>
+    <button onclick="showPayments()">💰 Pagos</button>
+    <button onclick="showFilters()">🔎 Filtros</button>
+  `;
+}
+
+function loadTattoo(){
+  document.getElementById("panelTitle").innerText = "Tatuador Panel";
+
+  document.getElementById("menu").innerHTML = `
+    <button onclick="showCalendar()">📅 Mi agenda</button>
+    <button onclick="loadAppointments()">📋 Turnos</button>
+  `;
+}
+
+/* ================= ARTISTS ================= */
+
+async function loadArtistsTabs(){
+
+  const { data } = await supabase.from("artists").select("*");
+
+  let html = `<div class="tabs">`;
+
+  html += `<button onclick="selectArtist(null)">Todos</button>`;
+
+  data.forEach(a=>{
+    html += `<button onclick="selectArtist('${a.id}')">${a.name}</button>`;
+  });
+
+  html += `</div>`;
+
+  document.getElementById("content").innerHTML = html;
 
   showCalendar();
 }
 
-/* ---------------- CALENDARIO ---------------- */
+function selectArtist(id){
+  selectedArtist = id;
+  showCalendar();
+}
+
+/* ================= CALENDAR ================= */
+
 function showCalendar(){
-  const c = document.getElementById("content");
 
   let html = "<h3>📅 Calendario</h3><div class='calendar'>";
 
@@ -133,26 +252,32 @@ function showCalendar(){
 
   html += "</div>";
 
-  c.innerHTML = html;
+  document.getElementById("content").innerHTML = html;
 }
 
-/* ---------------- OPEN DAY ---------------- */
-async function openDay(day){
-  const c = document.getElementById("content");
+/* ================= OPEN DAY ================= */
 
-  const { data } = await supabase
+async function openDay(day){
+
+  let query = supabase
     .from("appointments")
     .select("*")
     .eq("date", "Dia " + day);
 
-  c.innerHTML = `
+  if(selectedArtist){
+    query = query.eq("artist_id", selectedArtist);
+  }
+
+  const { data } = await query;
+
+  document.getElementById("content").innerHTML = `
     <h3>📅 Día ${day}</h3>
 
-    <input id="client" placeholder="Cliente"><br>
-    <input id="time" placeholder="Hora (10:15 / 18:40)"><br>
-    <input id="artist" placeholder="Tatuador"><br>
+    <input id="client" placeholder="Cliente">
+    <input id="time" placeholder="Hora (10:15)">
+    <br>
 
-    <button onclick="saveAppointment(${day})">Guardar turno</button>
+    <button onclick="saveAppointment(${day})">Guardar</button>
     <button onclick="showCalendar()">Volver</button>
 
     <hr>
@@ -162,7 +287,8 @@ async function openDay(day){
   renderDay(data);
 }
 
-/* ---------------- RENDER DAY ---------------- */
+/* ================= RENDER DAY ================= */
+
 function renderDay(data){
 
   let html = "";
@@ -171,10 +297,10 @@ function renderDay(data){
     html += `
       <div class="card">
         <b>${t.client}</b><br>
-        ${t.time} - ${t.artist}<br>
+        ${t.time} - ${t.artist_name}<br>
         <span class="${t.status}">${t.status}</span><br>
 
-        <button onclick="editTurn('${t.id}','${t.client}','${t.time}','${t.artist}','${t.status}')">
+        <button onclick="editTurn('${t.id}','${t.client}','${t.time}','${t.artist_name}','${t.status}')">
           Editar
         </button>
       </div>
@@ -184,32 +310,38 @@ function renderDay(data){
   document.getElementById("list").innerHTML = html;
 }
 
-/* ---------------- SAVE ---------------- */
+/* ================= SAVE ================= */
+
 async function saveAppointment(day){
 
   const client = document.getElementById("client").value;
   const time = document.getElementById("time").value;
-  const artist = document.getElementById("artist").value;
+
+  const { data: artist } = await supabase
+    .from("artists")
+    .select("*")
+    .eq("id", selectedArtist)
+    .single();
 
   await supabase.from("appointments").insert([{
     user_id: user.id,
     client,
     date: "Dia " + day,
     time,
-    artist,
+    artist_id: selectedArtist,
+    artist_name: artist ? artist.name : "Sin asignar",
     status: "pending"
   }]);
 
   openDay(day);
 }
 
-/* ---------------- EDIT ---------------- */
+/* ================= EDIT ================= */
+
 function editTurn(id, client, time, artist, status){
 
-  const c = document.getElementById("content");
-
-  c.innerHTML = `
-    <h3>Editar Turno</h3>
+  document.getElementById("content").innerHTML = `
+    <h3>Editar</h3>
 
     <input id="e_client" value="${client}">
     <input id="e_time" value="${time}">
@@ -221,14 +353,13 @@ function editTurn(id, client, time, artist, status){
   `;
 }
 
-/* ---------------- SAVE EDIT ---------------- */
 async function saveEdit(id){
 
   await supabase.from("appointments")
     .update({
       client: document.getElementById("e_client").value,
       time: document.getElementById("e_time").value,
-      artist: document.getElementById("e_artist").value,
+      artist_name: document.getElementById("e_artist").value,
       status: document.getElementById("e_status").value
     })
     .eq("id", id);
@@ -236,7 +367,8 @@ async function saveEdit(id){
   loadAppointments();
 }
 
-/* ---------------- LIST ---------------- */
+/* ================= LIST ================= */
+
 async function loadAppointments(){
 
   const { data } = await supabase
@@ -244,14 +376,14 @@ async function loadAppointments(){
     .select("*")
     .eq("user_id", user.id);
 
-  let html = "<h3>📋 Turnos</h3>";
+  let html = "<h3>Turnos</h3>";
 
   data.forEach(t=>{
     html += `
       <div class="card">
         <b>${t.client}</b><br>
         ${t.date} - ${t.time}<br>
-        ${t.artist}<br>
+        ${t.artist_name}<br>
         <span class="${t.status}">${t.status}</span>
       </div>
     `;
@@ -260,12 +392,13 @@ async function loadAppointments(){
   document.getElementById("content").innerHTML = html;
 }
 
-/* ---------------- CLIENTS ---------------- */
+/* ================= CLIENTS ================= */
+
 function showClients(){
   document.getElementById("content").innerHTML = `
     <h3>Clientes</h3>
-    <input id="name" placeholder="Nombre">
-    <input id="phone" placeholder="Tel">
+    <input id="name">
+    <input id="phone">
     <button onclick="saveClient()">Guardar</button>
   `;
 }
@@ -276,16 +409,15 @@ async function saveClient(){
     name: document.getElementById("name").value,
     phone: document.getElementById("phone").value
   }]);
-
-  alert("Cliente guardado");
 }
 
-/* ---------------- PAYMENTS ---------------- */
+/* ================= PAYMENTS ================= */
+
 function showPayments(){
   document.getElementById("content").innerHTML = `
     <h3>Pagos</h3>
-    <input id="client" placeholder="Cliente">
-    <input id="amount" placeholder="Monto">
+    <input id="client">
+    <input id="amount">
     <button onclick="savePayment()">Guardar</button>
   `;
 }
@@ -297,18 +429,15 @@ async function savePayment(){
     amount: document.getElementById("amount").value,
     status: "pending"
   }]);
-
-  alert("Pago guardado");
 }
 
-/* ---------------- FILTERS ---------------- */
+/* ================= FILTERS ================= */
+
 function showFilters(){
   document.getElementById("content").innerHTML = `
     <h3>Filtros</h3>
-
-    <input id="f_date" placeholder="Dia">
-    <input id="f_artist" placeholder="Tatuador">
-
+    <input id="f_date">
+    <input id="f_artist">
     <button onclick="applyFilters()">Buscar</button>
   `;
 }
@@ -321,7 +450,7 @@ async function applyFilters(){
   let query = supabase.from("appointments").select("*");
 
   if(date) query = query.eq("date", date);
-  if(artist) query = query.eq("artist", artist);
+  if(artist) query = query.eq("artist_name", artist);
 
   const { data } = await query;
 
