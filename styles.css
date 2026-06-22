@@ -5,13 +5,31 @@ background:#0a0a0a;
 color:#f5c542;
 }
 
+/* LOGIN */
+#login{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.loginBox{
+background:#111;
+padding:25px;
+border-radius:15px;
+text-align:center;
+width:280px;
+}
+
+/* APP LAYOUT */
 #app{
 display:none;
 height:100vh;
 display:grid;
-grid-template-columns:220px 1fr 300px;
+grid-template-columns:220px 1fr 320px;
 }
 
+/* SIDEBAR */
 .sidebar{
 background:#111;
 padding:20px;
@@ -33,49 +51,23 @@ cursor:pointer;
 background:#2a2a2a;
 }
 
-.main{
+/* CALENDAR */
+.calendarPanel{
 padding:15px;
 overflow:auto;
 }
 
-.right{
-background:#111;
-padding:15px;
-overflow:auto;
+#calendarHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
 }
 
-.loginBox{
-width:300px;
-margin:100px auto;
-text-align:center;
-background:#111;
-padding:20px;
-border-radius:15px;
-}
-
-input, button{
-width:90%;
-padding:10px;
-margin:5px;
-border-radius:8px;
-border:none;
-}
-
-button{
-background:#1c1c1c;
-color:#f5c542;
-cursor:pointer;
-}
-
-button:hover{
-background:#333;
-}
-
-/* CALENDARIO */
-.calendar{
+#calendar{
 display:grid;
 grid-template-columns:repeat(7,1fr);
-gap:10px;
+gap:8px;
 }
 
 .day{
@@ -91,10 +83,22 @@ background:#2a2a2a;
 }
 
 /* AGENDA */
+.agendaPanel{
+background:#111;
+padding:15px;
+overflow:auto;
+}
+
+.agendaHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
 .card{
 background:#1c1c1c;
 padding:10px;
-margin:5px 0;
+margin-top:8px;
 border-radius:10px;
 }
 
@@ -102,8 +106,22 @@ border-radius:10px;
 .pending{color:#f5c542}
 .booked{color:#ff4d4d}
 
-.role{
-margin-top:auto;
-font-size:12px;
-opacity:0.7;
+/* MODAL */
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+justify-content:center;
+align-items:center;
+}
+
+.modalBox{
+background:#111;
+padding:20px;
+border-radius:15px;
+width:300px;
 }
