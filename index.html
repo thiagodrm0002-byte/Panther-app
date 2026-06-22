@@ -50,14 +50,14 @@
   <button onclick="show('turnos')">Turnos</button>
   <button onclick="show('clientes')">Clientes</button>
   <button onclick="show('pagos')">Pagos</button>
+  <button onclick="calendar()">Calendario</button>
 
   <div id="content"></div>
 </div>
 
 <script>
-<script>
-let selectedDate = "";
 
+// LOGIN
 function login(){
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
@@ -65,56 +65,24 @@ function login(){
   if(email && pass){
     document.getElementById("login").style.display = "none";
     document.getElementById("app").style.display = "block";
-    renderCalendar();
   } else {
     alert("Completa todo");
   }
 }
 
-function renderCalendar(){
+// MENÚ PRINCIPAL
+function show(section){
   const c = document.getElementById("content");
 
-  let html = "<h3>📅 Calendario Panther</h3><div style='display:grid;grid-template-columns:repeat(7,1fr);gap:5px;'>";
-
-  for(let i=1;i<=30;i++){
-    html += `<button onclick="selectDay(${i})">${i}</button>`;
+  if(section === "turnos"){
+    c.innerHTML = `
+      <h3>📅 Turnos</h3>
+      <input placeholder="Cliente"><br>
+      <input placeholder="Fecha"><br>
+      <input placeholder="Hora"><br>
+      <button>Guardar turno</button>
+    `;
   }
-
-  html += "</div>";
-
-  c.innerHTML = html;
-}
-
-function selectDay(day){
-  selectedDate = day;
-
-  const c = document.getElementById("content");
-
-  c.innerHTML = `
-    <h3>📅 Día ${day}</h3>
-
-    <input id="client" placeholder="Cliente"><br>
-    <input id="time" placeholder="Hora"><br>
-
-    <button onclick="saveTurn()">Guardar turno</button>
-    <br><br>
-
-    <button onclick="renderCalendar()">Volver al calendario</button>
-  `;
-}
-
-function saveTurn(){
-  const client = document.getElementById("client").value;
-  const time = document.getElementById("time").value;
-
-  alert(`Turno guardado:
-Día ${selectedDate}
-Cliente: ${client}
-Hora: ${time}`);
-
-  renderCalendar();
-}
-</script>
 
   if(section === "clientes"){
     c.innerHTML = `
@@ -134,6 +102,41 @@ Hora: ${time}`);
     `;
   }
 }
+
+// CALENDARIO SIMPLE (ALMANAQUE)
+function calendar(){
+  const c = document.getElementById("content");
+
+  let html = "<h3>📅 Calendario Panther</h3>";
+
+  html += "<div style='display:grid;grid-template-columns:repeat(7,1fr);gap:5px;'>";
+
+  for(let i=1;i<=30;i++){
+    html += `<button onclick="selectDay(${i})">${i}</button>`;
+  }
+
+  html += "</div>";
+
+  c.innerHTML = html;
+}
+
+// DÍA SELECCIONADO
+function selectDay(day){
+  const c = document.getElementById("content");
+
+  c.innerHTML = `
+    <h3>📅 Día ${day}</h3>
+
+    <input placeholder="Cliente"><br>
+    <input placeholder="Hora"><br>
+
+    <button onclick="alert('Turno guardado')">Guardar turno</button>
+    <br><br>
+
+    <button onclick="calendar()">Volver</button>
+  `;
+}
+
 </script>
 
 </body>
