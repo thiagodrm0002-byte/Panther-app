@@ -29,7 +29,7 @@ button{
 
 button:hover{background:#333;}
 
-input, select{
+input,select{
   padding:10px;
   margin:5px;
   border-radius:8px;
@@ -54,197 +54,116 @@ input, select{
   background:#1c1c1c;
   margin:10px auto;
   width:80%;
-  padding:15px;
+  padding:10px;
   border-radius:10px;
   text-align:left;
-}
-
-.pending{color:#f5c542;}
-.booked{color:#ff4d4d;}
-.ok{color:#4dff88;}
-
-.tabs{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin:10px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🐆 PANTHER TATTO</h1>
+<h1>🐆 PANTHER SAAS</h1>
 
-<!-- AUTH -->
+<!-- LOGIN -->
 <div id="login">
-
-  <h2>Login / Registro</h2>
-
   <input id="email" placeholder="Email"><br>
   <input id="password" type="password" placeholder="Password"><br>
-
   <button onclick="auth()">Entrar</button>
-  <button onclick="resetPassword()">Recuperar contraseña</button>
-
+  <button onclick="resetPassword()">Recuperar</button>
   <p id="msg"></p>
 </div>
 
 <!-- APP -->
 <div id="app">
 
-  <h2 id="panelTitle">Panel</h2>
+  <h2 id="title"></h2>
 
-  <div id="menu"></div>
+  <button onclick="showCalendar()">📅 Turnos</button>
+  <button onclick="showClients()">👤 Clientes</button>
+  <button onclick="showPayments()">💰 Pagos</button>
+  <button onclick="logout()">Salir</button>
 
   <div id="content"></div>
-
 </div>
 
 <script>
+
 const supabaseUrl = "https://muckmihrgifzxazghngw.supabase.co";
-const supabaseKey = "const supabaseKey = "sb_publishable_wNdAJjCUenMzrYSWMelwHw_-mbvowyW";";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseKey = "sb_publishable_wNdAJjCUenMzrYSWMelwHw_-mbvowyW";
+
+const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
 let user = null;
 let profile = null;
-let selectedArtist = null;
 
 /* ================= AUTH ================= */
 
 async function auth(){
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = emailInput().value;
+  const password = passInput().value;
   const msg = document.getElementById("msg");
 
-  if(!email || !password){
-    msg.innerText = "Completa todo";
-    return;
-  }
-
-  const login = await supabase.auth.signInWithPassword({
-    email, password
-  });
+  const login = await sb.auth.signInWithPassword({ email, password });
 
   if(!login.error){
     user = login.data.user;
     await loadProfile();
-    startApp();
+    start();
     return;
   }
 
-  const signup = await supabase.auth.signUp({
-    email, password
-  });
+  const signup = await sb.auth.signUp({ email, password });
 
   if(signup.error){
     msg.innerText = signup.error.message;
     return;
   }
 
-  msg.innerText = "Usuario creado. Revisa email o vuelve a entrar.";
+  msg.innerText = "Usuario creado, volvé a entrar";
 }
 
-async function resetPassword(){
-  const email = document.getElementById("email").value;
+function emailInput(){ return document.getElementById("email"); }
+function passInput(){ return document.getElementById("password"); }
 
-  await supabase.auth.resetPasswordForEmail(email);
-  alert("Mail enviado");
-}
-
-/* ================= SESSION ================= */
-
-async function loadSession(){
-  const { data } = await supabase.auth.getUser();
-
-  if(data.user){
-    user = data.user;
-    await loadProfile();
-    startApp();
-  }
-}
-loadSession();
+/* ================= PROFILE ================= */
 
 async function loadProfile(){
-
-  const { data } = await supabase
+  const { data } = await sb
     .from("profiles")
     .select("*")
     .eq("id", user.id)
     .single();
 
   profile = data;
-}
 
-/* ================= APP START ================= */
+  if(!profile){
+    await sb.from("profiles").insert([{
+      id: user.id,
+      role: "admin",
+      name: "User"
+    }]);
 
-function startApp(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("app").style.display="block";
-
-  if(profile.role === "admin"){
-    loadAdmin();
-  } else {
-    loadTattoo();
+    profile = { role:"admin", name:"User" };
   }
 }
 
-/* ================= PANELS ================= */
+/* ================= START ================= */
 
-async function loadAdmin(){
-  document.getElementById("panelTitle").innerText = "Admin Panel";
+function start(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="block";
 
-  document.getElementById("menu").innerHTML = `
-    <button onclick="loadArtistsTabs()">🎨 Tatuadores</button>
-    <button onclick="showCalendar()">📅 Calendario</button>
-    <button onclick="loadAppointments()">📋 Turnos</button>
-    <button onclick="showClients()">👤 Clientes</button>
-    <button onclick="showPayments()">💰 Pagos</button>
-    <button onclick="showFilters()">🔎 Filtros</button>
-  `;
-}
+  document.getElementById("title").innerText =
+    profile.role === "admin" ? "Admin Panel" : "Tatuador Panel";
 
-function loadTattoo(){
-  document.getElementById("panelTitle").innerText = "Tatuador Panel";
-
-  document.getElementById("menu").innerHTML = `
-    <button onclick="showCalendar()">📅 Mi agenda</button>
-    <button onclick="loadAppointments()">📋 Turnos</button>
-  `;
-}
-
-/* ================= ARTISTS ================= */
-
-async function loadArtistsTabs(){
-
-  const { data } = await supabase.from("artists").select("*");
-
-  let html = `<div class="tabs">`;
-
-  html += `<button onclick="selectArtist(null)">Todos</button>`;
-
-  data.forEach(a=>{
-    html += `<button onclick="selectArtist('${a.id}')">${a.name}</button>`;
-  });
-
-  html += `</div>`;
-
-  document.getElementById("content").innerHTML = html;
-
-  showCalendar();
-}
-
-function selectArtist(id){
-  selectedArtist = id;
   showCalendar();
 }
 
 /* ================= CALENDAR ================= */
 
 function showCalendar(){
-
-  let html = "<h3>📅 Calendario</h3><div class='calendar'>";
+  let html = "<h3>Calendario</h3><div class='calendar'>";
 
   for(let i=1;i<=30;i++){
     html += `<div class='day' onclick="openDay(${i})">Día ${i}</div>`;
@@ -255,136 +174,27 @@ function showCalendar(){
   document.getElementById("content").innerHTML = html;
 }
 
-/* ================= OPEN DAY ================= */
+/* ================= DAY ================= */
 
 async function openDay(day){
 
-  let query = supabase
+  const { data } = await sb
     .from("appointments")
     .select("*")
-    .eq("date", "Dia " + day);
+    .eq("date", "Dia "+day);
 
-  if(selectedArtist){
-    query = query.eq("artist_id", selectedArtist);
-  }
-
-  const { data } = await query;
-
-  document.getElementById("content").innerHTML = `
-    <h3>📅 Día ${day}</h3>
-
+  let html = `
+    <h3>Día ${day}</h3>
     <input id="client" placeholder="Cliente">
-    <input id="time" placeholder="Hora (10:15)">
-    <br>
-
-    <button onclick="saveAppointment(${day})">Guardar</button>
-    <button onclick="showCalendar()">Volver</button>
-
-    <hr>
-    <div id="list"></div>
+    <input id="time" placeholder="Hora">
+    <button onclick="save(${day})">Guardar</button>
   `;
-
-  renderDay(data);
-}
-
-/* ================= RENDER DAY ================= */
-
-function renderDay(data){
-
-  let html = "";
 
   data.forEach(t=>{
     html += `
       <div class="card">
-        <b>${t.client}</b><br>
-        ${t.time} - ${t.artist_name}<br>
-        <span class="${t.status}">${t.status}</span><br>
-
-        <button onclick="editTurn('${t.id}','${t.client}','${t.time}','${t.artist_name}','${t.status}')">
-          Editar
-        </button>
-      </div>
-    `;
-  });
-
-  document.getElementById("list").innerHTML = html;
-}
-
-/* ================= SAVE ================= */
-
-async function saveAppointment(day){
-
-  const client = document.getElementById("client").value;
-  const time = document.getElementById("time").value;
-
-  const { data: artist } = await supabase
-    .from("artists")
-    .select("*")
-    .eq("id", selectedArtist)
-    .single();
-
-  await supabase.from("appointments").insert([{
-    user_id: user.id,
-    client,
-    date: "Dia " + day,
-    time,
-    artist_id: selectedArtist,
-    artist_name: artist ? artist.name : "Sin asignar",
-    status: "pending"
-  }]);
-
-  openDay(day);
-}
-
-/* ================= EDIT ================= */
-
-function editTurn(id, client, time, artist, status){
-
-  document.getElementById("content").innerHTML = `
-    <h3>Editar</h3>
-
-    <input id="e_client" value="${client}">
-    <input id="e_time" value="${time}">
-    <input id="e_artist" value="${artist}">
-    <input id="e_status" value="${status}">
-
-    <button onclick="saveEdit('${id}')">Guardar</button>
-    <button onclick="loadAppointments()">Cancelar</button>
-  `;
-}
-
-async function saveEdit(id){
-
-  await supabase.from("appointments")
-    .update({
-      client: document.getElementById("e_client").value,
-      time: document.getElementById("e_time").value,
-      artist_name: document.getElementById("e_artist").value,
-      status: document.getElementById("e_status").value
-    })
-    .eq("id", id);
-
-  loadAppointments();
-}
-
-/* ================= LIST ================= */
-
-async function loadAppointments(){
-
-  const { data } = await supabase
-    .from("appointments")
-    .select("*")
-    .eq("user_id", user.id);
-
-  let html = "<h3>Turnos</h3>";
-
-  data.forEach(t=>{
-    html += `
-      <div class="card">
-        <b>${t.client}</b><br>
-        ${t.date} - ${t.time}<br>
-        ${t.artist_name}<br>
-        <span class="${t.status}">${t.status}</span>
+        ${t.client} - ${t.time}<br>
+        ${t.artist_name || ""}
       </div>
     `;
   });
@@ -392,22 +202,42 @@ async function loadAppointments(){
   document.getElementById("content").innerHTML = html;
 }
 
+async function save(day){
+
+  const client = document.getElementById("client").value;
+  const time = document.getElementById("time").value;
+
+  await sb.from("appointments").insert([{
+    client,
+    date:"Dia "+day,
+    time,
+    status:"pending",
+    artist_name:"Sin asignar",
+    deposit:"",
+    user_id:user.id
+  }]);
+
+  openDay(day);
+}
+
 /* ================= CLIENTS ================= */
 
 function showClients(){
   document.getElementById("content").innerHTML = `
     <h3>Clientes</h3>
-    <input id="name">
-    <input id="phone">
+    <input id="cname" placeholder="Nombre">
+    <input id="cphone" placeholder="Tel">
+    <input id="cnotes" placeholder="Notas">
     <button onclick="saveClient()">Guardar</button>
   `;
 }
 
 async function saveClient(){
-  await supabase.from("clients").insert([{
-    user_id: user.id,
-    name: document.getElementById("name").value,
-    phone: document.getElementById("phone").value
+  await sb.from("clients").insert([{
+    name: cname.value,
+    phone: cphone.value,
+    notes: cnotes.value,
+    user_id:user.id
   }]);
 }
 
@@ -416,52 +246,38 @@ async function saveClient(){
 function showPayments(){
   document.getElementById("content").innerHTML = `
     <h3>Pagos</h3>
-    <input id="client">
-    <input id="amount">
+    <input id="pclient" placeholder="Cliente">
+    <input id="pamount" placeholder="Monto">
     <button onclick="savePayment()">Guardar</button>
   `;
 }
 
 async function savePayment(){
-  await supabase.from("payments").insert([{
-    user_id: user.id,
-    client: document.getElementById("client").value,
-    amount: document.getElementById("amount").value,
-    status: "pending"
+  await sb.from("payments").insert([{
+    client:pclient.value,
+    amount:pamount.value,
+    status:"pending",
+    user_id:user.id
   }]);
 }
 
-/* ================= FILTERS ================= */
+/* ================= SESSION ================= */
 
-function showFilters(){
-  document.getElementById("content").innerHTML = `
-    <h3>Filtros</h3>
-    <input id="f_date">
-    <input id="f_artist">
-    <button onclick="applyFilters()">Buscar</button>
-  `;
+async function logout(){
+  await sb.auth.signOut();
+  location.reload();
 }
 
-async function applyFilters(){
+/* auto login */
+(async ()=>{
+  const { data } = await sb.auth.getUser();
+  if(data.user){
+    user = data.user;
+    await loadProfile();
+    start();
+  }
+})();
 
-  let date = document.getElementById("f_date").value;
-  let artist = document.getElementById("f_artist").value;
-
-  let query = supabase.from("appointments").select("*");
-
-  if(date) query = query.eq("date", date);
-  if(artist) query = query.eq("artist_name", artist);
-
-  const { data } = await query;
-
-  let html = "<h3>Resultados</h3>";
-
-  data.forEach(t=>{
-    html += `<div class="card">${t.client} - ${t.time}</div>`;
-  });
-
-  document.getElementById("content").innerHTML = html;
-}
 </script>
 
 </body>
