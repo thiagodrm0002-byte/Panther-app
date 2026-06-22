@@ -5,15 +5,14 @@
 <title>Panther SaaS Pro</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="auth" class="center">
-  <div class="loginCard">
+<!-- AUTH -->
+<div id="auth">
+  <div class="card">
     <h2>🐆 Panther SaaS</h2>
 
     <input id="email" placeholder="Email">
@@ -30,20 +29,17 @@
 <!-- APP -->
 <div id="app">
   <div class="topbar">
-    <h2 id="title"></h2>
+    <h3 id="roleTitle"></h3>
 
-    <div class="menu">
-      <button onclick="renderCalendar()">📅 Turnos</button>
-      <button onclick="renderClients()">👤 Clientes</button>
-      <button onclick="renderPayments()">💰 Pagos</button>
-      <button onclick="renderFilters()">🔎 Filtros</button>
-    </div>
+    <button onclick="showCalendar()">Calendario</button>
+    <button onclick="showResources()">Tatuadores</button>
+    <button onclick="showClients()">Clientes</button>
+    <button onclick="showPayments()">Pagos</button>
   </div>
 
   <div id="content"></div>
 </div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
