@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Panther Studio</title>
+<title>Panther Studio SaaS</title>
 
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -12,7 +12,7 @@
 
 <!-- LOGIN -->
 <div id="login">
-  <div class="loginBox">
+  <div class="loginCard">
     <h1>🐆 Panther Studio</h1>
 
     <input id="username" placeholder="Usuario">
@@ -29,35 +29,35 @@
   <div class="sidebar">
     <h2>PANTHER</h2>
 
-    <button onclick="showCalendar()">📅 Turnos</button>
-    <button onclick="showClients()">👤 Clientes</button>
-    <button onclick="showPayments()">💰 Pagos</button>
-    <button onclick="showArtists()">🎨 Equipo</button>
+    <button onclick="renderCalendar()">📅 Turnos</button>
+    <button onclick="alert('Clientes')">👤 Clientes</button>
+    <button onclick="alert('Pagos')">💰 Pagos</button>
+    <button onclick="alert('Equipo')">🎨 Equipo</button>
     <button onclick="logout()">Salir</button>
 
-    <div class="role" id="role"></div>
+    <div id="roleTag"></div>
   </div>
 
   <!-- CALENDARIO -->
-  <div class="calendarPanel">
-    <div id="calendarHeader"></div>
-    <div id="calendar"></div>
+  <div class="calendar">
+    <div id="monthHeader"></div>
+    <div id="grid"></div>
   </div>
 
   <!-- AGENDA -->
-  <div class="agendaPanel">
+  <div class="agenda">
     <div class="agendaHeader">
       <h3 id="dayTitle">Agenda</h3>
       <button onclick="openModal()">+ Nuevo turno</button>
     </div>
 
-    <div id="agenda"></div>
+    <div id="agendaList"></div>
   </div>
 
 </div>
 
 <!-- MODAL -->
-<div id="modal" class="modal">
+<div id="modal">
   <div class="modalBox">
     <h3>Nuevo Turno</h3>
 
