@@ -5,79 +5,97 @@ background:#0a0a0a;
 color:#f5c542;
 }
 
-/* LAYOUT */
+/* LAYOUT EXACTO SAAS */
 #app{
 display:grid;
-grid-template-columns:240px 1fr 340px;
+grid-template-columns:240px 1fr 360px;
 height:100vh;
 }
 
-/* SIDEBAR */
+/* SIDEBAR REAL */
 .sidebar{
-background:#0f0f0f;
-padding:15px;
+background:#0e0e0e;
+padding:18px;
 display:flex;
 flex-direction:column;
-gap:10px;
 border-right:1px solid #1f1f1f;
 }
 
 .logo{
-font-size:22px;
-font-weight:bold;
+font-size:20px;
+font-weight:700;
+margin-bottom:20px;
 }
 
+/* BOTONES LIMPIOS */
 .sidebar button{
 background:#151515;
 color:#f5c542;
 border:none;
 padding:10px;
 border-radius:10px;
+margin-bottom:8px;
+text-align:left;
 cursor:pointer;
+font-size:13px;
 }
 
-#artistList{
+/* ROL ABAJO (ESTILO IMAGEN) */
+.user{
+margin-top:auto;
 font-size:12px;
-opacity:0.7;
-margin-top:10px;
+opacity:0.6;
+border-top:1px solid #222;
+padding-top:10px;
 }
 
-/* CALENDAR */
-.calendar{
-padding:15px;
-}
-
+/* HEADER CALENDARIO (FIX IMPORTANTE) */
 .top{
 display:flex;
 justify-content:space-between;
 align-items:center;
+padding:5px 0;
 }
 
-.week{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-text-align:center;
-opacity:0.6;
-margin-top:10px;
+.monthTitle{
+font-size:18px;
+font-weight:600;
+opacity:0.9;
 }
 
+/* BOTONES MES PEQUEÑOS (FIX TU ERROR) */
+.top button{
+background:none;
+border:none;
+color:#f5c542;
+font-size:18px;
+cursor:pointer;
+padding:5px;
+}
+
+/* CALENDARIO */
 #calendarGrid{
 display:grid;
 grid-template-columns:repeat(7,1fr);
 gap:10px;
-margin-top:10px;
+margin-top:15px;
 }
 
 .day{
-width:40px;
-height:40px;
+width:38px;
+height:38px;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
+background:#141414;
 cursor:pointer;
-background:#151515;
 margin:auto;
+transition:.2s;
+}
+
+.day:hover{
+background:#1f1f1f;
 }
 
 .today{
@@ -96,18 +114,20 @@ padding:15px;
 border-left:1px solid #1f1f1f;
 }
 
+/* CARDS TURNOS */
 .card{
 background:#151515;
 padding:10px;
 margin-top:8px;
 border-radius:10px;
+font-size:13px;
 }
 
 .green{border-left:4px solid #2ecc71}
 .yellow{border-left:4px solid #f1c40f}
 .red{border-left:4px solid #e74c3c}
 
-/* MODAL */
+/* MODAL PRO */
 #modal{
 display:none;
 position:fixed;
@@ -130,4 +150,6 @@ padding:10px;
 margin-top:8px;
 border:none;
 border-radius:8px;
+background:#1a1a1a;
+color:white;
 }
