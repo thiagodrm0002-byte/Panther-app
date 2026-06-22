@@ -2,73 +2,81 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Panther Studio SaaS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Panther Studio</title>
 
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-  <div class="loginCard">
-    <h1>🐆 Panther Studio</h1>
-
-    <input id="username" placeholder="Usuario">
-    <input id="password" type="password" placeholder="Contraseña">
-
-    <button onclick="login()">Entrar</button>
-  </div>
-</div>
-
-<!-- APP -->
 <div id="app">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h2>PANTHER</h2>
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-    <button onclick="renderCalendar()">📅 Turnos</button>
-    <button onclick="alert('Clientes')">👤 Clientes</button>
-    <button onclick="alert('Pagos')">💰 Pagos</button>
-    <button onclick="alert('Equipo')">🎨 Equipo</button>
-    <button onclick="logout()">Salir</button>
+<div class="logo">🐆 PANTHER</div>
 
-    <div id="roleTag"></div>
-  </div>
+<button onclick="renderCalendar()">📅 Turnos</button>
+<button>👤 Clientes</button>
+<button>💰 Pagos</button>
+<button>🎨 Equipo</button>
 
-  <!-- CALENDARIO -->
-  <div class="calendar">
-    <div id="monthHeader"></div>
-    <div id="grid"></div>
-  </div>
+<div class="userBox">
+Titi<br>
+Recepción
+</div>
 
-  <!-- AGENDA -->
-  <div class="agenda">
-    <div class="agendaHeader">
-      <h3 id="dayTitle">Agenda</h3>
-      <button onclick="openModal()">+ Nuevo turno</button>
-    </div>
+</div>
 
-    <div id="agendaList"></div>
-  </div>
+<!-- CALENDAR -->
+<div class="calendar">
+
+<div class="topBar">
+<button onclick="prevMonth()"><</button>
+<h2 id="monthTitle"></h2>
+<button onclick="nextMonth()">></button>
+</div>
+
+<div class="week">
+<div>Lun</div><div>Mar</div><div>Mié</div>
+<div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+</div>
+
+<div id="calendarGrid"></div>
+
+</div>
+
+<!-- AGENDA -->
+<div class="agenda">
+
+<div class="agendaHeader">
+<h2 id="selectedDay">Día</h2>
+<button onclick="openModal()">+ Nuevo turno</button>
+</div>
+
+<div id="agendaList"></div>
+
+</div>
 
 </div>
 
 <!-- MODAL -->
 <div id="modal">
-  <div class="modalBox">
-    <h3>Nuevo Turno</h3>
+<div class="modal">
 
-    <input id="m_client" placeholder="Cliente">
-    <input id="m_time" placeholder="Hora 14:15">
-    <input id="m_artist" placeholder="Tatuador">
-    <input id="m_deposit" placeholder="Seña">
+<h3>Nuevo Turno</h3>
 
-    <button onclick="saveTurn()">Guardar</button>
-    <button onclick="closeModal()">Cerrar</button>
-  </div>
+<input id="client" placeholder="Cliente">
+<input id="time" placeholder="Hora 14:15">
+<input id="artist" placeholder="Tatuador">
+<input id="deposit" placeholder="Seña">
+
+<button onclick="save()">Guardar</button>
+<button onclick="closeModal()">Cerrar</button>
+
+</div>
 </div>
 
 <script src="app.js"></script>
