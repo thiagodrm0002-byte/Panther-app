@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Panther SaaS</title>
+<title>Panther SaaS Studio</title>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,62 +14,80 @@
 <div id="app">
 
 <!-- SIDEBAR -->
-<aside class="sidebar">
+<div class="sidebar">
 
-<div class="logo">Panther Tatto</div>
+<div class="logo">🐆 PANTHER</div>
 
-<button onclick="renderCalendar()">📅 Calendario</button>
-<button onclick="addArtist()">🎨 Tatuadores</button>
-<button onclick="showClients()">👤 Clientes</button>
-
-
-<div id="artistList"></div>
+<button onclick="showView('calendar')">📅 Turnos</button>
+<button onclick="showView('clients')">👤 Clientes</button>
+<button onclick="showView('payments')">💰 Pagos</button>
+<button onclick="showView('team')">🎨 Equipo</button>
 
 <div class="user">
-Titi (Owner)
+<span id="userRole">Owner</span>
 </div>
 
-</aside>
+</div>
 
-<!-- CALENDARIO -->
-<section class="calendar">
+<!-- MAIN -->
+<div class="main">
 
-<div class="top">
+<!-- CALENDAR -->
+<div id="calendarView" class="view active">
+
+<div class="topbar">
 <button onclick="prevMonth()">‹</button>
 <h2 id="monthTitle"></h2>
 <button onclick="nextMonth()">›</button>
 </div>
 
-<div class="week">
-<div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
-</div>
-
 <div id="calendarGrid"></div>
 
-</section>
+</div>
+
+<!-- CLIENTS -->
+<div id="clientsView" class="view">
+<h2>Clientes</h2>
+<div id="clientsList"></div>
+</div>
+
+<!-- PAYMENTS -->
+<div id="paymentsView" class="view">
+<h2>Pagos</h2>
+<div id="paymentsList"></div>
+</div>
+
+<!-- TEAM -->
+<div id="teamView" class="view">
+<h2>Equipo</h2>
+
+<input id="newArtist" placeholder="Nuevo tatuador">
+<button onclick="addArtist()">Agregar</button>
+
+<div id="artistsList"></div>
+</div>
+
+</div>
 
 <!-- AGENDA -->
-<aside class="agenda">
+<div class="agenda">
 
-<h2 id="selectedDay">Seleccioná un día</h2>
+<h2 id="selectedDay">Día</h2>
 
 <button onclick="openModal()">+ Nuevo turno</button>
 
-<div id="agendaList"></div>
+<div id="appointmentsList"></div>
 
-</aside>
+</div>
 
 </div>
 
 <!-- MODAL -->
 <div id="modal">
-
 <div class="modal">
 
-<h3>Nuevo Turno</h3>
-
 <input id="client" placeholder="Cliente">
-<input id="time" placeholder="Hora 14:15">
+<input id="time" placeholder="Hora">
 
 <select id="artistSelect"></select>
 
@@ -79,11 +97,10 @@ Titi (Owner)
 <option value="red">Ocupado</option>
 </select>
 
-<button onclick="save()">Guardar</button>
+<button onclick="saveAppointment()">Guardar</button>
 <button onclick="closeModal()">Cerrar</button>
 
 </div>
-
 </div>
 
 <script src="app.js"></script>
