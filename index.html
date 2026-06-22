@@ -1,40 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Panther Tattoo</title>
+<meta charset="UTF-8">
+<title>Panther Tattoo SaaS</title>
 
-  <style>
-    body{
-      background:black;
-      color:gold;
-      font-family:Arial;
-      text-align:center;
-      padding-top:40px;
-    }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-    input, button{
-      padding:10px;
-      margin:5px;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0a0a0a;
+  color:#f5c542;
+  text-align:center;
+}
 
-    #app{
-      display:none;
-    }
+#app{display:none;}
 
-    #content{
-      margin-top:20px;
-    }
+button{
+  padding:10px;
+  margin:5px;
+  border-radius:10px;
+  border:none;
+  background:#1c1c1c;
+  color:#f5c542;
+  cursor:pointer;
+}
 
-    button{
-      cursor:pointer;
-    }
-  </style>
+button:hover{background:#333;}
+
+input{
+  padding:10px;
+  margin:5px;
+  border-radius:8px;
+  border:none;
+}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  padding:10px;
+}
+
+.day{
+  background:#1c1c1c;
+  padding:15px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.card{
+  background:#1c1c1c;
+  margin:10px auto;
+  width:80%;
+  padding:15px;
+  border-radius:10px;
+  text-align:left;
+}
+
+.pending{color:#ffcc00;}
+.ok{color:#00ff88;}
+</style>
 </head>
 
 <body>
 
-<h1>🐆 Panther Tattoo</h1>
+<h1>🐆 PANTHER SAAS</h1>
 
 <!-- LOGIN -->
 <div id="login">
@@ -45,74 +77,56 @@
 
 <!-- APP -->
 <div id="app">
-  <h2>Dashboard</h2>
 
-  <button onclick="show('turnos')">Turnos</button>
-  <button onclick="show('clientes')">Clientes</button>
-  <button onclick="show('pagos')">Pagos</button>
-  <button onclick="calendar()">Calendario</button>
+  <h2>Panel Empresa</h2>
+
+  <button onclick="showCalendar()">📅 Turnos</button>
+  <button onclick="showClients()">👤 Clientes</button>
+  <button onclick="showPayments()">💰 Pagos</button>
+  <button onclick="loadAppointments()">📋 Ver Turnos</button>
 
   <div id="content"></div>
+
 </div>
 
 <script>
+const supabaseUrl = "https://muckmihrgifzxazghngw.supabase.co";
+const supabaseKey = "sb_publishable_wNdAJjCUenMzrYSWMelwHw_-mbvowyW";
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-// LOGIN
-function login(){
+let user = null;
+
+// LOGIN REAL
+async function login(){
   const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
+  const password = document.getElementById("password").value;
 
-  if(email && pass){
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  } else {
-    alert("Completa todo");
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    alert("Error login");
+    return;
   }
+
+  user = data.user;
+
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="block";
+
+  showCalendar();
 }
 
-// MENÚ PRINCIPAL
-function show(section){
+// CALENDARIO
+function showCalendar(){
   const c = document.getElementById("content");
 
-  if(section === "turnos"){
-    c.innerHTML = `
-      <h3>📅 Turnos</h3>
-      <input placeholder="Cliente"><br>
-      <input placeholder="Fecha"><br>
-      <input placeholder="Hora"><br>
-      <button>Guardar turno</button>
-    `;
-  }
-
-  if(section === "clientes"){
-    c.innerHTML = `
-      <h3>👤 Clientes</h3>
-      <input placeholder="Nombre"><br>
-      <input placeholder="Teléfono"><br>
-      <button>Guardar cliente</button>
-    `;
-  }
-
-  if(section === "pagos"){
-    c.innerHTML = `
-      <h3>💰 Pagos</h3>
-      <input placeholder="Cliente"><br>
-      <input placeholder="Monto"><br>
-      <button>Guardar pago</button>
-    `;
-  }
-}
-
-// CALENDARIO SIMPLE (ALMANAQUE)
-function calendar(){
-  const c = document.getElementById("content");
-
-  let html = "<h3>📅 Calendario Panther</h3>";
-
-  html += "<div style='display:grid;grid-template-columns:repeat(7,1fr);gap:5px;'>";
+  let html = "<h3>📅 Calendario Empresa</h3><div class='calendar'>";
 
   for(let i=1;i<=30;i++){
-    html += `<button onclick="selectDay(${i})">${i}</button>`;
+    html += `<div class='day' onclick="openDay(${i})">${i}</div>`;
   }
 
   html += "</div>";
@@ -120,23 +134,106 @@ function calendar(){
   c.innerHTML = html;
 }
 
-// DÍA SELECCIONADO
-function selectDay(day){
+// DIA
+function openDay(day){
   const c = document.getElementById("content");
 
   c.innerHTML = `
     <h3>📅 Día ${day}</h3>
 
-    <input placeholder="Cliente"><br>
-    <input placeholder="Hora"><br>
+    <input id="client" placeholder="Cliente"><br>
+    <input id="time" placeholder="Hora"><br>
 
-    <button onclick="alert('Turno guardado')">Guardar turno</button>
-    <br><br>
-
-    <button onclick="calendar()">Volver</button>
+    <button onclick="saveAppointment(${day})">Guardar turno</button>
+    <button onclick="showCalendar()">Volver</button>
   `;
 }
 
+// GUARDAR TURNO (EMPRESA)
+async function saveAppointment(day){
+  const client = document.getElementById("client").value;
+  const time = document.getElementById("time").value;
+
+  await supabase.from("appointments").insert([{
+    user_id: user.id,
+    client,
+    date: "Dia " + day,
+    time,
+    status:"pendiente"
+  }]);
+
+  alert("Guardado");
+  showCalendar();
+}
+
+// VER TURNOS
+async function loadAppointments(){
+  const c = document.getElementById("content");
+
+  const { data } = await supabase
+    .from("appointments")
+    .select("*")
+    .eq("user_id", user.id);
+
+  let html = "<h3>📋 Turnos</h3>";
+
+  data.forEach(t=>{
+    html += `
+      <div class="card">
+        <b>${t.client}</b><br>
+        ${t.date} - ${t.time}<br>
+        <span class="pending">${t.status}</span>
+      </div>
+    `;
+  });
+
+  c.innerHTML = html;
+}
+
+// CLIENTES
+async function showClients(){
+  const c = document.getElementById("content");
+
+  c.innerHTML = `
+    <h3>👤 Clientes</h3>
+    <input id="name" placeholder="Nombre"><br>
+    <input id="phone" placeholder="Tel"><br>
+    <button onclick="saveClient()">Guardar</button>
+  `;
+}
+
+async function saveClient(){
+  await supabase.from("clients").insert([{
+    user_id: user.id,
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value
+  }]);
+
+  alert("Cliente guardado");
+}
+
+// PAGOS
+async function showPayments(){
+  const c = document.getElementById("content");
+
+  c.innerHTML = `
+    <h3>💰 Pagos</h3>
+    <input id="client" placeholder="Cliente"><br>
+    <input id="amount" placeholder="Monto"><br>
+    <button onclick="savePayment()">Guardar</button>
+  `;
+}
+
+async function savePayment(){
+  await supabase.from("payments").insert([{
+    user_id: user.id,
+    client: document.getElementById("client").value,
+    amount: document.getElementById("amount").value,
+    status:"pendiente"
+  }]);
+
+  alert("Pago guardado");
+}
 </script>
 
 </body>
