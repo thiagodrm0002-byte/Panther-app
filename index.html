@@ -59,8 +59,9 @@ input{
   text-align:left;
 }
 
-.pending{color:#ffcc00;}
-.ok{color:#00ff88;}
+.pending{color:#f5c542;}
+.booked{color:#ff4d4d;}
+.free{color:#4dff88;}
 </style>
 </head>
 
@@ -80,10 +81,11 @@ input{
 
   <h2>Panel Empresa</h2>
 
-  <button onclick="showCalendar()">📅 Turnos</button>
+  <button onclick="showCalendar()">📅 Calendario</button>
+  <button onclick="loadAppointments()">📋 Turnos</button>
   <button onclick="showClients()">👤 Clientes</button>
   <button onclick="showPayments()">💰 Pagos</button>
-  <button onclick="loadAppointments()">📋 Ver Turnos</button>
+  <button onclick="showFilters()">🔎 Filtros</button>
 
   <div id="content"></div>
 
@@ -96,7 +98,7 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 let user = null;
 
-// LOGIN REAL
+/* ---------------- LOGIN ---------------- */
 async function login(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -119,14 +121,14 @@ async function login(){
   showCalendar();
 }
 
-// CALENDARIO
+/* ---------------- CALENDARIO ---------------- */
 function showCalendar(){
   const c = document.getElementById("content");
 
-  let html = "<h3>📅 Calendario Empresa</h3><div class='calendar'>";
+  let html = "<h3>📅 Calendario</h3><div class='calendar'>";
 
   for(let i=1;i<=30;i++){
-    html += `<div class='day' onclick="openDay(${i})">${i}</div>`;
+    html += `<div class='day' onclick="openDay(${i})">Día ${i}</div>`;
   }
 
   html += "</div>";
@@ -134,41 +136,108 @@ function showCalendar(){
   c.innerHTML = html;
 }
 
-// DIA
-function openDay(day){
+/* ---------------- OPEN DAY ---------------- */
+async function openDay(day){
   const c = document.getElementById("content");
+
+  const { data } = await supabase
+    .from("appointments")
+    .select("*")
+    .eq("date", "Dia " + day);
 
   c.innerHTML = `
     <h3>📅 Día ${day}</h3>
 
     <input id="client" placeholder="Cliente"><br>
-    <input id="time" placeholder="Hora"><br>
+    <input id="time" placeholder="Hora (10:15 / 18:40)"><br>
+    <input id="artist" placeholder="Tatuador"><br>
 
     <button onclick="saveAppointment(${day})">Guardar turno</button>
     <button onclick="showCalendar()">Volver</button>
+
+    <hr>
+    <div id="list"></div>
   `;
+
+  renderDay(data);
 }
 
-// GUARDAR TURNO (EMPRESA)
+/* ---------------- RENDER DAY ---------------- */
+function renderDay(data){
+
+  let html = "";
+
+  data.forEach(t=>{
+    html += `
+      <div class="card">
+        <b>${t.client}</b><br>
+        ${t.time} - ${t.artist}<br>
+        <span class="${t.status}">${t.status}</span><br>
+
+        <button onclick="editTurn('${t.id}','${t.client}','${t.time}','${t.artist}','${t.status}')">
+          Editar
+        </button>
+      </div>
+    `;
+  });
+
+  document.getElementById("list").innerHTML = html;
+}
+
+/* ---------------- SAVE ---------------- */
 async function saveAppointment(day){
+
   const client = document.getElementById("client").value;
   const time = document.getElementById("time").value;
+  const artist = document.getElementById("artist").value;
 
   await supabase.from("appointments").insert([{
     user_id: user.id,
     client,
     date: "Dia " + day,
     time,
-    status:"pendiente"
+    artist,
+    status: "pending"
   }]);
 
-  alert("Guardado");
-  showCalendar();
+  openDay(day);
 }
 
-// VER TURNOS
-async function loadAppointments(){
+/* ---------------- EDIT ---------------- */
+function editTurn(id, client, time, artist, status){
+
   const c = document.getElementById("content");
+
+  c.innerHTML = `
+    <h3>Editar Turno</h3>
+
+    <input id="e_client" value="${client}">
+    <input id="e_time" value="${time}">
+    <input id="e_artist" value="${artist}">
+    <input id="e_status" value="${status}">
+
+    <button onclick="saveEdit('${id}')">Guardar</button>
+    <button onclick="loadAppointments()">Cancelar</button>
+  `;
+}
+
+/* ---------------- SAVE EDIT ---------------- */
+async function saveEdit(id){
+
+  await supabase.from("appointments")
+    .update({
+      client: document.getElementById("e_client").value,
+      time: document.getElementById("e_time").value,
+      artist: document.getElementById("e_artist").value,
+      status: document.getElementById("e_status").value
+    })
+    .eq("id", id);
+
+  loadAppointments();
+}
+
+/* ---------------- LIST ---------------- */
+async function loadAppointments(){
 
   const { data } = await supabase
     .from("appointments")
@@ -182,22 +251,21 @@ async function loadAppointments(){
       <div class="card">
         <b>${t.client}</b><br>
         ${t.date} - ${t.time}<br>
-        <span class="pending">${t.status}</span>
+        ${t.artist}<br>
+        <span class="${t.status}">${t.status}</span>
       </div>
     `;
   });
 
-  c.innerHTML = html;
+  document.getElementById("content").innerHTML = html;
 }
 
-// CLIENTES
-async function showClients(){
-  const c = document.getElementById("content");
-
-  c.innerHTML = `
-    <h3>👤 Clientes</h3>
-    <input id="name" placeholder="Nombre"><br>
-    <input id="phone" placeholder="Tel"><br>
+/* ---------------- CLIENTS ---------------- */
+function showClients(){
+  document.getElementById("content").innerHTML = `
+    <h3>Clientes</h3>
+    <input id="name" placeholder="Nombre">
+    <input id="phone" placeholder="Tel">
     <button onclick="saveClient()">Guardar</button>
   `;
 }
@@ -212,14 +280,12 @@ async function saveClient(){
   alert("Cliente guardado");
 }
 
-// PAGOS
-async function showPayments(){
-  const c = document.getElementById("content");
-
-  c.innerHTML = `
-    <h3>💰 Pagos</h3>
-    <input id="client" placeholder="Cliente"><br>
-    <input id="amount" placeholder="Monto"><br>
+/* ---------------- PAYMENTS ---------------- */
+function showPayments(){
+  document.getElementById("content").innerHTML = `
+    <h3>Pagos</h3>
+    <input id="client" placeholder="Cliente">
+    <input id="amount" placeholder="Monto">
     <button onclick="savePayment()">Guardar</button>
   `;
 }
@@ -229,10 +295,43 @@ async function savePayment(){
     user_id: user.id,
     client: document.getElementById("client").value,
     amount: document.getElementById("amount").value,
-    status:"pendiente"
+    status: "pending"
   }]);
 
   alert("Pago guardado");
+}
+
+/* ---------------- FILTERS ---------------- */
+function showFilters(){
+  document.getElementById("content").innerHTML = `
+    <h3>Filtros</h3>
+
+    <input id="f_date" placeholder="Dia">
+    <input id="f_artist" placeholder="Tatuador">
+
+    <button onclick="applyFilters()">Buscar</button>
+  `;
+}
+
+async function applyFilters(){
+
+  let date = document.getElementById("f_date").value;
+  let artist = document.getElementById("f_artist").value;
+
+  let query = supabase.from("appointments").select("*");
+
+  if(date) query = query.eq("date", date);
+  if(artist) query = query.eq("artist", artist);
+
+  const { data } = await query;
+
+  let html = "<h3>Resultados</h3>";
+
+  data.forEach(t=>{
+    html += `<div class="card">${t.client} - ${t.time}</div>`;
+  });
+
+  document.getElementById("content").innerHTML = html;
 }
 </script>
 
