@@ -5,33 +5,16 @@ background:#0a0a0a;
 color:#f5c542;
 }
 
-/* LOGIN */
-#login{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.loginCard{
-background:#111;
-padding:25px;
-border-radius:15px;
-width:280px;
-text-align:center;
-}
-
-/* APP LAYOUT */
 #app{
-display:none;
-height:100vh;
+display:grid;
 grid-template-columns:220px 1fr 320px;
+height:100vh;
 }
 
 /* SIDEBAR */
 .sidebar{
 background:#111;
-padding:20px;
+padding:15px;
 display:flex;
 flex-direction:column;
 gap:10px;
@@ -42,29 +25,50 @@ background:#1c1c1c;
 color:#f5c542;
 border:none;
 padding:10px;
-border-radius:10px;
+border-radius:8px;
 cursor:pointer;
 }
 
-.sidebar button:hover{
-background:#2a2a2a;
+.logo{
+font-size:20px;
+margin-bottom:10px;
+}
+
+.userBox{
+margin-top:auto;
+font-size:12px;
+opacity:0.7;
 }
 
 /* CALENDAR */
 .calendar{
 padding:15px;
-overflow:auto;
 }
 
-#grid{
+.topBar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.week{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+text-align:center;
+opacity:0.6;
+margin-top:10px;
+}
+
+#calendarGrid{
 display:grid;
 grid-template-columns:repeat(7,1fr);
 gap:8px;
+margin-top:10px;
 }
 
 .day{
 background:#1c1c1c;
-padding:18px;
+padding:20px;
 text-align:center;
 border-radius:10px;
 cursor:pointer;
@@ -78,42 +82,34 @@ background:#2a2a2a;
 .agenda{
 background:#111;
 padding:15px;
-overflow:auto;
 }
 
 .agendaHeader{
 display:flex;
 justify-content:space-between;
-align-items:center;
-}
-
-.card{
-background:#1c1c1c;
-padding:10px;
-margin:6px 0;
-border-radius:10px;
 }
 
 /* MODAL */
 #modal{
 display:none;
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+inset:0;
 background:rgba(0,0,0,0.7);
 justify-content:center;
 align-items:center;
 }
 
-.modalBox{
+.modal{
 background:#111;
 padding:20px;
-border-radius:15px;
+border-radius:12px;
 width:300px;
 }
 
-.free{color:#4dff88}
-.pending{color:#f5c542}
-.booked{color:#ff4d4d}
+input,button{
+width:100%;
+margin-top:8px;
+padding:10px;
+border:none;
+border-radius:8px;
+}
