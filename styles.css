@@ -5,21 +5,60 @@ background:#0a0a0a;
 color:#f5c542;
 }
 
-#app{display:none}
-
-.card{
-background:#1c1c1c;
-padding:15px;
-margin:10px;
-border-radius:12px;
+#app{
+display:none;
+height:100vh;
+display:grid;
+grid-template-columns:220px 1fr 300px;
 }
 
-input,button{
+.sidebar{
+background:#111;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.sidebar button{
+background:#1c1c1c;
+color:#f5c542;
+border:none;
+padding:10px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.sidebar button:hover{
+background:#2a2a2a;
+}
+
+.main{
+padding:15px;
+overflow:auto;
+}
+
+.right{
+background:#111;
+padding:15px;
+overflow:auto;
+}
+
+.loginBox{
+width:300px;
+margin:100px auto;
+text-align:center;
+background:#111;
+padding:20px;
+border-radius:15px;
+}
+
+input, button{
+width:90%;
 padding:10px;
 margin:5px;
 border-radius:8px;
 border:none;
-width:90%;
 }
 
 button{
@@ -28,47 +67,43 @@ color:#f5c542;
 cursor:pointer;
 }
 
-button:hover{background:#333}
-
-.topbar{
-background:#111;
-padding:10px;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+button:hover{
+background:#333;
 }
 
-.grid{
+/* CALENDARIO */
+.calendar{
 display:grid;
 grid-template-columns:repeat(7,1fr);
-gap:5px;
-padding:10px;
+gap:10px;
 }
 
 .day{
 background:#1c1c1c;
-padding:10px;
+padding:20px;
 text-align:center;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
 }
 
-/* MATRIX (CINE STYLE) */
-.matrix{
-display:grid;
-grid-template-columns:120px repeat(4,1fr);
-gap:5px;
-padding:10px;
+.day:hover{
+background:#2a2a2a;
 }
 
-.cell{
+/* AGENDA */
+.card{
+background:#1c1c1c;
 padding:10px;
-text-align:center;
-border-radius:8px;
-cursor:pointer;
+margin:5px 0;
+border-radius:10px;
 }
 
-.free{background:#2a2a2a}
-.pending{background:orange;color:black}
-.booked{background:red;color:white}
-.confirmed{background:green;color:white}
+.free{color:#4dff88}
+.pending{color:#f5c542}
+.booked{color:#ff4d4d}
+
+.role{
+margin-top:auto;
+font-size:12px;
+opacity:0.7;
+}
