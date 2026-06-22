@@ -16,45 +16,39 @@
 <!-- SIDEBAR -->
 <div class="sidebar">
 
-<div class="logo">🐆 PANTHER</div>
+<div class="logo">🐆 Panther</div>
 
-<button onclick="renderCalendar()">📅 Turnos</button>
-<button>👤 Clientes</button>
-<button>💰 Pagos</button>
-<button>🎨 Equipo</button>
+<button onclick="renderCalendar()">📅 Calendario</button>
+<button onclick="addArtist()">🎨 Tatuadores</button>
+<button onclick="clearAll()">🧹 Limpiar</button>
 
-<div class="userBox">
-Titi<br>
-Recepción
-</div>
+<div class="artists" id="artists"></div>
 
 </div>
 
-<!-- CALENDAR -->
+<!-- CENTER -->
 <div class="calendar">
 
-<div class="topBar">
-<button onclick="prevMonth()"><</button>
+<div class="header">
+<button onclick="prevMonth()">‹</button>
 <h2 id="monthTitle"></h2>
-<button onclick="nextMonth()">></button>
+<button onclick="nextMonth()">›</button>
 </div>
 
 <div class="week">
-<div>Lun</div><div>Mar</div><div>Mié</div>
-<div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+<div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
 </div>
 
 <div id="calendarGrid"></div>
 
 </div>
 
-<!-- AGENDA -->
+<!-- RIGHT -->
 <div class="agenda">
 
-<div class="agendaHeader">
 <h2 id="selectedDay">Día</h2>
+
 <button onclick="openModal()">+ Nuevo turno</button>
-</div>
 
 <div id="agendaList"></div>
 
@@ -64,19 +58,27 @@ Recepción
 
 <!-- MODAL -->
 <div id="modal">
+
 <div class="modal">
 
 <h3>Nuevo Turno</h3>
 
 <input id="client" placeholder="Cliente">
 <input id="time" placeholder="Hora 14:15">
-<input id="artist" placeholder="Tatuador">
-<input id="deposit" placeholder="Seña">
+
+<select id="artistSelect"></select>
+
+<select id="status">
+<option value="green">Disponible</option>
+<option value="yellow">Seña</option>
+<option value="red">Ocupado</option>
+</select>
 
 <button onclick="save()">Guardar</button>
 <button onclick="closeModal()">Cerrar</button>
 
 </div>
+
 </div>
 
 <script src="app.js"></script>
