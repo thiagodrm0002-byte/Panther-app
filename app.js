@@ -20,31 +20,36 @@ function login(){
 function show(section){
   const c = document.getElementById("content");
 
+  if(!c){
+    alert("No existe #content en HTML");
+    return;
+  }
+
   if(section === "turnos"){
     c.innerHTML = `
-      <h3>Turnos</h3>
-      <input id="client" placeholder="Cliente">
-      <input id="date" placeholder="Fecha">
-      <input id="time" placeholder="Hora">
-      <button onclick="saveTurno()">Guardar</button>
+      <h3>📅 Turnos</h3>
+      <input id="client" placeholder="Cliente"><br>
+      <input id="date" placeholder="Fecha"><br>
+      <input id="time" placeholder="Hora"><br>
+      <button onclick="saveTurno()">Guardar turno</button>
     `;
   }
 
   if(section === "clientes"){
     c.innerHTML = `
-      <h3>Clientes</h3>
-      <input id="name" placeholder="Nombre">
-      <input id="phone" placeholder="Teléfono">
-      <button onclick="saveClient()">Guardar</button>
+      <h3>👤 Clientes</h3>
+      <input id="name" placeholder="Nombre"><br>
+      <input id="phone" placeholder="Teléfono"><br>
+      <button onclick="saveClient()">Guardar cliente</button>
     `;
   }
 
   if(section === "pagos"){
     c.innerHTML = `
-      <h3>Pagos</h3>
-      <input id="pclient" placeholder="Cliente">
-      <input id="amount" placeholder="Monto">
-      <button onclick="savePayment()">Guardar</button>
+      <h3>💰 Pagos</h3>
+      <input id="pclient" placeholder="Cliente"><br>
+      <input id="amount" placeholder="Monto"><br>
+      <button onclick="savePayment()">Guardar pago</button>
     `;
   }
 }
