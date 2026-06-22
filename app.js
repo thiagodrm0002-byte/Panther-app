@@ -4,7 +4,6 @@ let selectedDay = null;
 let turnos = [];
 let tatuadores = ["Alex", "Martín", "Sofi"];
 
-/* INIT */
 renderCalendar();
 renderArtists();
 renderSelect();
@@ -30,11 +29,8 @@ grid.innerHTML += `<div></div>`;
 
 for(let d=1; d<=days; d++){
 
-let today = new Date().getDate();
-let isToday = d === today;
-
 grid.innerHTML += `
-<div class="day ${isToday ? 'today' : ''}" onclick="openDay(${d})">
+<div class="day" onclick="openDay(${d})">
 ${d}
 </div>`;
 }
@@ -55,7 +51,8 @@ turnos
 
 html += `
 <div class="card ${t.status}">
-${t.time} - ${t.client}<br>
+<b>${t.time}</b><br>
+${t.client}<br>
 ${t.artist}
 </div>
 `;
@@ -67,17 +64,12 @@ document.getElementById("agendaList").innerHTML = html;
 /* SAVE */
 function save(){
 
-let client = document.getElementById("client").value;
-let time = document.getElementById("time").value;
-let artist = document.getElementById("artistSelect").value;
-let status = document.getElementById("status").value;
-
 turnos.push({
 day:selectedDay,
-client,
-time,
-artist,
-status
+client:client.value,
+time:time.value,
+artist:artistSelect.value,
+status:status.value
 });
 
 closeModal();
@@ -86,17 +78,17 @@ openDay(selectedDay);
 
 /* MODAL */
 function openModal(){
-document.getElementById("modal").style.display="flex";
+modal.style.display="flex";
 }
 
 function closeModal(){
-document.getElementById("modal").style.display="none";
+modal.style.display="none";
 }
 
-/* TATUADORES */
+/* ARTISTS */
 function addArtist(){
 
-let name = prompt("Nombre tatuador");
+let name = prompt("Tatuador");
 
 if(name){
 tatuadores.push(name);
@@ -107,39 +99,22 @@ renderSelect();
 
 function renderArtists(){
 
-let html = "";
-
-tatuadores.forEach(t=>{
-html += `<div>• ${t}</div>`;
-});
-
-document.getElementById("artists").innerHTML = html;
+artistList.innerHTML =
+tatuadores.map(t => "• " + t).join("<br>");
 }
 
 function renderSelect(){
 
-let sel = document.getElementById("artistSelect");
-sel.innerHTML = "";
+artistSelect.innerHTML = "";
 
 tatuadores.forEach(t=>{
-sel.innerHTML += `<option>${t}</option>`;
+artistSelect.innerHTML += `<option>${t}</option>`;
 });
-}
-
-/* NAV MONTH */
-function prevMonth(){
-currentDate.setMonth(currentDate.getMonth()-1);
-renderCalendar();
-}
-
-function nextMonth(){
-currentDate.setMonth(currentDate.getMonth()+1);
-renderCalendar();
 }
 
 /* CLEAN */
 function clearAll(){
 turnos = [];
 renderCalendar();
-document.getElementById("agendaList").innerHTML = "";
+agendaList.innerHTML = "";
 }
