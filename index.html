@@ -11,22 +11,29 @@
     <div class="main-layout">
         <div id="calendario-container">
             <h2>Junio 2026</h2>
-            <div id="grid-dias">
-                <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
-                <script>
-                    for (let i = 1; i <= 31; i++) {
-                        document.write(`
-                            <div class="dia-celda" onclick="verAgenda(this, ${i})">
-                                <span>${i}</span>
-                                <div class="contenedor-puntos">
-                                    <div class="punto verde"></div>
-                                </div>
-                            </div>
-                        `);
-                    }
-                </script>
-            </div>
-        </div>
+           <div id="grid-dias" style="display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #333; border-left: 1px solid #333; margin-top: 15px;">
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">LUN</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">MAR</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">MIÉ</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">JUE</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">VIE</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">SÁB</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem;">DOM</span>
+
+    <script>
+        for (let i = 1; i <= 31; i++) {
+            document.write(`
+                <div class="dia-celda" onclick="verAgenda(this, ${i})" style="padding: 15px 5px; border-right: 1px solid #333; border-bottom: 1px solid #333; cursor: pointer; text-align: center;">
+                    <span style="color: white; display: block;">${i}</span>
+                    <div style="display: flex; justify-content: center; gap: 4px; margin-top: 8px;">
+                        <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%;"></div>
+                    </div>
+                </div>
+            `);
+        }
+    </script>
+</div>
+
 
         <div id="panel-turnos">
             <h2 id="titulo-agenda">Agenda del día</h2>
@@ -62,4 +69,4 @@
         function cerrarModal() { document.getElementById('modal-turno').style.display = 'none'; }
     </script>
 </body>
-</html>
+</html> 
