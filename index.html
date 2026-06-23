@@ -9,16 +9,15 @@
 <body>
 
     <div class="main-layout">
-        
-        <!-- IZQUIERDA: CALENDARIO -->
+        <!-- CALENDARIO -->
         <div id="calendario-container" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; margin-bottom: 20px;">
             <h2 style="margin: 0 0 20px 0; color: white;">Mayo 2025</h2>
-            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: #666; font-size: 0.9rem;">
+            <div id="grid-dias" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: #666; font-size: 0.9rem;">
                 <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
                 <script>
                     for (let i = 1; i <= 31; i++) {
                         document.write(`
-                            <div onclick="verAgenda(${i})" style="color: white; padding: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s;">
+                            <div class="dia-celda" onclick="verAgenda(this, ${i})" style="color: white; padding: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s;">
                                 ${i}
                                 <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%; margin: 5px auto 0 auto;"></div>
                             </div>
@@ -28,28 +27,47 @@
             </div>
         </div>
 
-        <!-- DERECHA: PANEL DE AGENDA -->
+        <!-- PANEL AGENDA -->
         <div id="panel-turnos" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; color: white;">
             <h2 id="titulo-agenda">Agenda del día</h2>
-            <button style="background: #D4AF37; color: black; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer;">+ Nuevo Turno</button>
+            <button onclick="abrirModal()" style="background: #D4AF37; color: black; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer;">+ Nuevo Turno</button>
             <div id="lista-turnos" style="margin-top: 20px; color: #666;">
                 <p>Selecciona un día para ver turnos</p>
             </div>
         </div>
-        
+    </div>
+
+    <!-- MODAL DE CARGA -->
+    <div id="modal-turno" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: #1A1A1A; padding: 25px; border-radius: 12px; width: 85%; border: 1px solid #D4AF37;">
+            <h3 style="color: white; margin-top: 0;">Nuevo Turno</h3>
+            <input type="text" placeholder="Nombre Cliente" style="width: 100%; margin-bottom: 10px; background: #333; border: none; padding: 10px; color: white; border-radius: 5px;">
+            <select style="width: 100%; margin-bottom: 10px; background: #333; padding: 10px; color: white; border: none; border-radius: 5px;">
+                <option>Seleccionar Tatuador</option>
+            </select>
+            <select style="width: 100%; margin-bottom: 10px; background: #333; padding: 10px; color: white; border: none; border-radius: 5px;">
+                <option>Estado: Seña</option>
+                <option>Estado: Libre</option>
+                <option>Estado: Ocupado</option>
+            </select>
+            <input type="number" placeholder="Monto Seña" style="width: 100%; margin-bottom: 20px; background: #333; border: none; padding: 10px; color: white; border-radius: 5px;">
+            <button onclick="cerrarModal()" style="background: #D4AF37; width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Guardar Turno</button>
+        </div>
     </div>
 
     <script>
-        function verAgenda(dia) {
-            // Actualiza el título dinámicamente
-            const titulo = document.getElementById('titulo-agenda');
-            titulo.innerText = "Agenda del día " + dia + " de Mayo";
-            
-            // Prepara el área de carga
-            const lista = document.getElementById('lista-turnos');
-            lista.innerHTML = `<p style="color: #D4AF37;">Cargando turnos del ${dia}...</p>`;
-        }
-    </script>
+        function verAgenda(elemento, dia) {
+            // Resalta el día
+            document.querySelectorAll('.dia-celda').forEach(el => el.style.backgroundColor = "transparent");
+            elemento.style.backgroundColor = "#333";
 
+            // Actualiza título
+            document.getElementById('titulo-agenda').innerText = "Agenda del " + dia + " de Mayo";
+            document.getElementById('lista-turnos').innerHTML = `<p style="color: #D4AF37;">Cargando turnos...</p>`;
+        }
+
+        function abrirModal() { document.getElementById('modal-turno').style.display = 'flex'; }
+        function cerrarModal() { document.getElementById('modal-turno').style.display = 'none'; }
+    </script>
 </body>
 </html>
