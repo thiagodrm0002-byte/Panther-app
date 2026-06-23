@@ -10,32 +10,46 @@
 
     <div class="main-layout">
         
+        <!-- IZQUIERDA: CALENDARIO -->
         <div id="calendario-container" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; margin-bottom: 20px;">
-    <h2 style="margin: 0 0 20px 0; color: white;">Mayo 2025</h2>
-    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: #666; font-size: 0.9rem;">
-        <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
-        <script>
-            for (let i = 1; i <= 31; i++) {
-                document.write(`
-                    <div style="color: white; padding: 10px 0; cursor: pointer;">
-                        ${i}
-                        <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%; margin: 5px auto 0 auto;"></div>
-                    </div>
-                `);
-            }
-        </script>
-    </div>
-</div>
+            <h2 style="margin: 0 0 20px 0; color: white;">Mayo 2025</h2>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: #666; font-size: 0.9rem;">
+                <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
+                <script>
+                    for (let i = 1; i <= 31; i++) {
+                        document.write(`
+                            <div onclick="verAgenda(${i})" style="color: white; padding: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s;">
+                                ${i}
+                                <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%; margin: 5px auto 0 auto;"></div>
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
 
-        <div id="panel-turnos">
-            <h2>Agenda del día</h2>
-            <button style="background: #D4AF37; color: black; border: none; padding: 10px; border-radius: 5px; font-weight: bold;">+ Nuevo Turno</button>
+        <!-- DERECHA: PANEL DE AGENDA -->
+        <div id="panel-turnos" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; color: white;">
+            <h2 id="titulo-agenda">Agenda del día</h2>
+            <button style="background: #D4AF37; color: black; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer;">+ Nuevo Turno</button>
             <div id="lista-turnos" style="margin-top: 20px; color: #666;">
                 <p>Selecciona un día para ver turnos</p>
             </div>
         </div>
         
     </div>
+
+    <script>
+        function verAgenda(dia) {
+            // Actualiza el título dinámicamente
+            const titulo = document.getElementById('titulo-agenda');
+            titulo.innerText = "Agenda del día " + dia + " de Mayo";
+            
+            // Prepara el área de carga
+            const lista = document.getElementById('lista-turnos');
+            lista.innerHTML = `<p style="color: #D4AF37;">Cargando turnos del ${dia}...</p>`;
+        }
+    </script>
 
 </body>
 </html>
