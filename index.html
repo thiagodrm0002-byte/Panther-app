@@ -10,17 +10,22 @@
 
     <div class="main-layout">
         
-        <div id="calendario-container">
-            <h2 style="margin: 0 0 20px 0;">Mayo 2025</h2>
-            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-                <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
-                <script>
-                    for (let i = 1; i <= 31; i++) {
-                        document.write(`<div>${i}</div>`);
-                    }
-                </script>
-            </div>
-        </div>
+        <div id="calendario-container" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; margin-bottom: 20px;">
+    <h2 style="margin: 0 0 20px 0; color: white;">Mayo 2025</h2>
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: #666; font-size: 0.9rem;">
+        <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
+        <script>
+            for (let i = 1; i <= 31; i++) {
+                document.write(`
+                    <div style="color: white; padding: 10px 0; cursor: pointer;">
+                        ${i}
+                        <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%; margin: 5px auto 0 auto;"></div>
+                    </div>
+                `);
+            }
+        </script>
+    </div>
+</div>
 
         <div id="panel-turnos">
             <h2>Agenda del día</h2>
