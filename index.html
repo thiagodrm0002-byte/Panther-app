@@ -1,13 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Styles.css">
+    <title>Panther Studio</title>
+</head>
 <body>
+
     <div class="main-layout">
+        
         <div id="calendario-container">
+            <h2 style="margin: 0 0 20px 0;">Mayo 2025</h2>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+                <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
+                <script>
+                    for (let i = 1; i <= 31; i++) {
+                        document.write(`<div>${i}</div>`);
+                    }
+                </script>
             </div>
+        </div>
 
         <div id="panel-turnos">
             <h2>Agenda del día</h2>
-            <button onclick="abrirModal()">+ Nuevo Turno</button>
-            <div id="lista-turnos">
-                </div>
+            <button style="background: #D4AF37; color: black; border: none; padding: 10px; border-radius: 5px; font-weight: bold;">+ Nuevo Turno</button>
+            <div id="lista-turnos" style="margin-top: 20px; color: #666;">
+                <p>Selecciona un día para ver turnos</p>
+            </div>
         </div>
+        
     </div>
+
 </body>
+</html>
