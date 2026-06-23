@@ -26,3 +26,19 @@ body {
     #calendario-container { flex: 0 0 60%; }
     #panel-turnos { flex: 1; }
 }
+#grid-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-top: 1px solid #333;
+    border-left: 1px solid #333; /* Esto crea el borde exterior izquierdo */
+}
+
+.dia-celda {
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+    padding: 15px 5px;
+    cursor: pointer;
+    text-align: center;
+    color: white;
+}
+
