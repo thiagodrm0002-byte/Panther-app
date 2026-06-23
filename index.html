@@ -11,20 +11,27 @@
     <div class="main-layout">
         <div id="calendario-container" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; margin-bottom: 20px;">
             <h2 style="margin: 0 0 20px 0; color: white;">Mayo 2025</h2>
-            <div id="grid-dias" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: #666; font-size: 0.9rem;">
-                <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
-                <script>
-                    for (let i = 1; i <= 31; i++) {
-                        document.write(`
-                            <div class="dia-celda" onclick="verAgenda(this, ${i})" style="color: white; padding: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s;">
-                                ${i}
-                                <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%; margin: 5px auto 0 auto;"></div>
-                            </div>
-                        `);
-                    }
-                </script>
-            </div>
-        </div>
+            <div id="grid-dias" style="display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #333; border-left: 1px solid #333; margin-top: 20px;">
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">LUN</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">MAR</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">MIÉ</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">JUE</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">VIE</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">SÁB</span>
+    <span style="padding: 10px; border-right: 1px solid #333; border-bottom: 1px solid #333; color: #666; font-size: 0.7rem; text-align: center;">DOM</span>
+
+    <script>
+        for (let i = 1; i <= 31; i++) {
+            document.write(`
+                <div class="dia-celda" onclick="verAgenda(this, ${i})" style="padding: 15px 5px; border-right: 1px solid #333; border-bottom: 1px solid #333; cursor: pointer; text-align: center; color: white;">
+                    ${i}
+                    <div style="width: 6px; height: 6px; background-color: #22C55E; border-radius: 50%; margin: 8px auto 0 auto;"></div>
+                </div>
+            `);
+        }
+    </script>
+</div>
+
 
         <div id="panel-turnos" style="background-color: #1A1A1A; padding: 20px; border-radius: 16px; border: 1px solid #333; color: white;">
             <h2 id="titulo-agenda">Agenda del día</h2>
