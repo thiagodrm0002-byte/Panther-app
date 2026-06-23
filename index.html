@@ -21,11 +21,18 @@
         </div>
 
         <!-- Fila de días (LUN, MAR...) -->
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; color: #666; font-size: 0.85rem; font-weight: bold; margin-bottom: 20px;">
-            <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
-        </div>
-
-    </div>
-
-</body>
-</html>
+        <!-- Días del mes (del 1 al 31) -->
+<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: white;">
+    
+    <!-- Este es el ejemplo para los días 1 al 31 -->
+    <script>
+        for (let i = 1; i <= 31; i++) {
+            // El día 22 es especial, vamos a resaltarlo
+            let style = "padding: 10px 0; border-radius: 50%;";
+            if (i === 22) {
+                style += "background-color: #D4AF37; color: black; font-weight: bold;";
+            }
+            document.write(`<div style="${style}">${i}</div>`);
+        }
+    </script>
+</div>
