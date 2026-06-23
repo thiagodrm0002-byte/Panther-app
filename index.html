@@ -1,96 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Panther Studio</title>
-
-<link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-</head>
-
-<body>
-
-<div id="app">
-
-<!-- LOGIN -->
-<div id="loginBox">
-<h2>🐆 Panther Studio</h2>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="login()">Entrar</button>
-
-<p id="msg"></p>
+<div id="calendario-container">
+    <div class="calendar-header">
+        <div class="nav-arrows">
+            <span>&lt;</span>
+            <h2>Mayo 2025</h2>
+            <span>&gt;</span>
+        </div>
+        <button class="btn-hoy">Hoy</button>
+    </div>
+    <!-- Aquí irán los días después -->
 </div>
-
-<!-- APP -->
-<div id="main" style="display:none">
-
-<div class="layout">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-<div class="logo">🐆 PANTHER</div>
-
-<button onclick="renderCalendar()">📅 Calendario</button>
-<button onclick="loadArtists()">🎨 Tatuadores</button>
-</div>
-
-<!-- CALENDAR -->
-<div class="calendar">
-
-<div class="top">
-<button onclick="prevMonth()">‹</button>
-<h2 id="monthTitle"></h2>
-<button onclick="nextMonth()">›</button>
-</div>
-
-<div id="calendarGrid"></div>
-
-</div>
-
-<!-- AGENDA -->
-<div class="agenda">
-
-<h3 id="selectedDay">Día</h3>
-
-<button onclick="openModal()">+ Turno</button>
-
-<div id="appointments"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- MODAL -->
-<div id="modal">
-<div class="modal">
-
-<input id="client" placeholder="Cliente">
-<input id="time" placeholder="Hora">
-
-<select id="artist"></select>
-
-<select id="status">
-<option value="green">Verde</option>
-<option value="yellow">Amarillo</option>
-<option value="red">Rojo</option>
-</select>
-
-<button onclick="save()">Guardar</button>
-<button onclick="closeModal()">Cerrar</button>
-
-</div>
-</div>
-
-<script src="app.js"></script>
-
-</body>
-</html>
