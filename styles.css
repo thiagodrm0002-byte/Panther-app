@@ -1,29 +1,35 @@
-#calendario-container {
-    background-color: #1A1A1A;
-    padding: 24px;
-    border-radius: 16px;
-    color: #FFFFFF;
-}
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-
-.nav-arrows {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 1.2rem;
-}
-
-.btn-hoy {
-    background: transparent;
-    border: 1px solid #374151;
+#/* Styles.css */
+body {
+    background-color: #111111;
     color: white;
-    padding: 6px 16px;
-    border-radius: 6px;
-    cursor: pointer;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* El contenedor principal */
+.main-layout {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+/* El calendario ocupa el 60% */
+#calendario-container {
+    flex: 0 0 60%;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #333;
+}
+
+/* El panel de turnos a la derecha ocupa el 40% */
+#panel-turnos {
+    flex: 1;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #333;
 }
