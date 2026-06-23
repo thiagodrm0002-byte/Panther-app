@@ -2,14 +2,14 @@
 body {
     background-color: #111111;
     color: white;
-    margin: 0;
-    padding: 10px;
     font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
 }
 
 .main-layout {
     display: flex;
-    flex-direction: column; /* En celular, uno debajo del otro */
+    flex-direction: column;
     gap: 20px;
 }
 
@@ -20,11 +20,9 @@ body {
     border: 1px solid #333;
 }
 
-/* En pantallas grandes (computadoras), que se pongan lado a lado */
+/* Solo para pantallas grandes */
 @media (min-width: 768px) {
-    .main-layout {
-        flex-direction: row;
-    }
+    .main-layout { flex-direction: row; }
     #calendario-container { flex: 0 0 60%; }
     #panel-turnos { flex: 1; }
 }
