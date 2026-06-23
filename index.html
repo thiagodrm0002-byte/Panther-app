@@ -22,17 +22,23 @@
 
         <!-- Fila de días (LUN, MAR...) -->
         <!-- Días del mes (del 1 al 31) -->
+<<!-- Días del mes (Todos iguales, sin resaltar el 22) -->
 <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: white;">
     
-    <!-- Este es el ejemplo para los días 1 al 31 -->
     <script>
         for (let i = 1; i <= 31; i++) {
-            // El día 22 es especial, vamos a resaltarlo
-            let style = "padding: 10px 0; border-radius: 50%;";
-            if (i === 22) {
-                style += "background-color: #D4AF37; color: black; font-weight: bold;";
-            }
-            document.write(`<div style="${style}">${i}</div>`);
+            // Estilo uniforme para todos los días
+            let dayStyle = "padding: 10px 0; font-size: 1rem;";
+            
+            // Simulación de estados (puntos de colores para todos los días)
+            let statusColor = (i % 3 === 0) ? "#EF4444" : (i % 2 === 0) ? "#22C55E" : "#EAB308";
+            
+            document.write(`
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                    <div style="${dayStyle}">${i}</div>
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${statusColor};"></div>
+                </div>
+            `);
         }
     </script>
 </div>
