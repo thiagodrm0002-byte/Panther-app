@@ -1,35 +1,30 @@
-#/* Styles.css */
+/* Styles.css */
 body {
     background-color: #111111;
     color: white;
     margin: 0;
-    display: flex;
-    height: 100vh;
-    padding: 20px;
-    gap: 20px;
+    padding: 10px;
+    font-family: sans-serif;
 }
 
-/* El contenedor principal */
 .main-layout {
     display: flex;
-    width: 100%;
+    flex-direction: column; /* En celular, uno debajo del otro */
     gap: 20px;
 }
 
-/* El calendario ocupa el 60% */
-#calendario-container {
-    flex: 0 0 60%;
+#calendario-container, #panel-turnos {
     background-color: #1A1A1A;
     padding: 20px;
     border-radius: 16px;
     border: 1px solid #333;
 }
 
-/* El panel de turnos a la derecha ocupa el 40% */
-#panel-turnos {
-    flex: 1;
-    background-color: #1A1A1A;
-    padding: 20px;
-    border-radius: 16px;
-    border: 1px solid #333;
+/* En pantallas grandes (computadoras), que se pongan lado a lado */
+@media (min-width: 768px) {
+    .main-layout {
+        flex-direction: row;
+    }
+    #calendario-container { flex: 0 0 60%; }
+    #panel-turnos { flex: 1; }
 }
