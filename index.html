@@ -1,44 +1,13 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panther Studio</title>
-</head>
-<body style="background-color: #111111; color: white; font-family: sans-serif; margin: 0; padding: 20px;">
-
-    <!-- Contenedor del Calendario -->
-    <div style="background-color: #1A1A1A; padding: 24px; border-radius: 16px; border: 1px solid #333; max-width: 600px; margin: 0 auto;">
-        
-        <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <div style="display: flex; gap: 20px; align-items: center; font-size: 1.2rem; font-weight: 600;">
-                <span>&lt;</span>
-                <span>Mayo 2025</span>
-                <span>&gt;</span>
+<body>
+    <div class="main-layout">
+        <div id="calendario-container">
             </div>
-            <button style="background: transparent; color: white; border: 1px solid #444; padding: 8px 20px; border-radius: 8px; font-weight: 500; cursor: pointer;">Hoy</button>
-        </div>
 
-        <!-- Fila de días (LUN, MAR...) -->
-        <!-- Días del mes (del 1 al 31) -->
-<<!-- Días del mes (Todos iguales, sin resaltar el 22) -->
-<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; text-align: center; color: white;">
-    
-    <script>
-        for (let i = 1; i <= 31; i++) {
-            // Estilo uniforme para todos los días
-            let dayStyle = "padding: 10px 0; font-size: 1rem;";
-            
-            // Simulación de estados (puntos de colores para todos los días)
-            let statusColor = (i % 3 === 0) ? "#EF4444" : (i % 2 === 0) ? "#22C55E" : "#EAB308";
-            
-            document.write(`
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                    <div style="${dayStyle}">${i}</div>
-                    <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${statusColor};"></div>
+        <div id="panel-turnos">
+            <h2>Agenda del día</h2>
+            <button onclick="abrirModal()">+ Nuevo Turno</button>
+            <div id="lista-turnos">
                 </div>
-            `);
-        }
-    </script>
-</div>
+        </div>
+    </div>
+</body>
